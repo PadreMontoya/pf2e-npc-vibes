@@ -1,0 +1,67 @@
+{
+  "PF2E_NPC_VIBES": {
+    "ModuleName": "PF2E NPC Vibes",
+    "Settings": {
+      "EnableVisualIndicators": {
+        "Name": "Enable Visual Indicators",
+        "Hint": "Show colored auras around NPCs based on PC vibes"
+      },
+      "EnableNotifications": {
+        "Name": "Enable Vibe Notifications",
+        "Hint": "Send whispered messages when significant vibes occur"
+      },
+      "AuraOpacity": {
+        "Name": "Aura Opacity",
+        "Hint": "Opacity level for vibe auras (0-100%)"
+      },
+      "AuraSize": {
+        "Name": "Aura Size",
+        "Hint": "Size multiplier for vibe auras"
+      }
+    },
+    "Vibes": {
+      "Repulsed": "Repulsed",
+      "Curious": "Curious", 
+      "Awestruck": "Awestruck",
+      "None": "No Vibe"
+    },
+    "Connections": {
+      "Stranger": "Stranger",
+      "Acquaintance": "Acquaintance",
+      "Friend": "Friend",
+      "BestFriend": "Best Friend",
+      "Descriptions": {
+        "Stranger": "You have no meaningful relationship with this character.",
+        "Acquaintance": "You know this character casually, such as a shopkeeper you buy from regularly.",
+        "Friend": "You have a genuine friendship with this character.",
+        "BestFriend": "This character is one of your closest companions."
+      }
+    },
+    "Notifications": {
+      "PCVibeTowards": "{pcName} feels {vibe} towards {npcName}",
+      "NPCVibeTowards": "{npcName} feels {vibe} towards {pcName}",
+      "FirstSight": "First sight between {pcName} and {npcName}"
+    },
+    "VibeBook": {
+      "Title": "Vibe Book",
+      "PlayerView": "Your Vibes",
+      "GMView": "All Vibes",
+      "Character": "Character",
+      "Vibe": "Vibe",
+      "Connection": "Connection",
+      "NoVibes": "No vibes recorded yet",
+      "PCVibes": "PC Vibes",
+      "NPCVibes": "NPC Vibes",
+      "Towards": "towards",
+      "From": "from"
+    },
+    "Macros": {
+      "VibeBook": "Open Vibe Book"
+    },
+    "Errors": {
+      "NoCharacter": "No character selected",
+      "InvalidToken": "Invalid token",
+      "SaveFailed": "Failed to save vibe data"
+    }
+  }
+}

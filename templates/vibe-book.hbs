@@ -1,0 +1,208 @@
+<div class="vibe-book-content">
+  {{#if error}}
+    <div class="error-message">
+      <p>{{error}}</p>
+    </div>
+  {{else}}
+    <div class="vibe-book-header">
+      <div class="header-controls">
+        <button type="button" class="refresh-vibes">
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+        {{#if isGM}}
+          <button type="button" class="export-vibes">
+            <i class="fas fa-download"></i> Export
+          </button>
+          <button type="button" class="import-vibes">
+            <i class="fas fa-upload"></i> Import
+          </button>
+        {{/if}}
+      </div>
+    </div>
+
+    {{#if isGM}}
+      <!-- GM View -->
+      <div class="gm-view">
+        {{#if vibeData.hasVibes}}
+          <!-- PC Vibes Section -->
+          {{#if vibeData.pcVibes}}
+            <div class="vibe-section">
+              <h3>{{localize "PF2E_NPC_VIBES.VibeBook.PCVibes"}}</h3>
+              <div class="vibe-list">
+                {{#each vibeData.pcVibes}}
+                  <div class="vibe-entry">
+                    <div class="vibe-character-name">{{pcName}}</div>
+                    <div class="vibe-direction">{{localize "PF2E_NPC_VIBES.VibeBook.Towards"}}</div>
+                    <div class="vibe-target-name">{{npcName}}</div>
+                    <div class="vibe-indicator {{vibe}}" style="background-color: {{vibeColor}}" title="{{vibeDisplay}}"></div>
+                    <div class="vibe-connection">
+                      <select class="connection-select" data-pc-uuid="{{pcUuid}}" data-npc-uuid="{{npcUuid}}">
+                        {{#each ../connectionLevels}}
+                          <option value="{{value}}" {{#if (eq value ../connection)}}selected{{/if}}>
+                            {{label}}
+                          </option>
+                        {{/each}}
+                      </select>
+                    </div>
+                  </div>
+                {{/each}}
+              </div>
+            </div>
+          {{/if}}
+
+          <!-- NPC Vibes Section -->
+          {{#if vibeData.npcVibes}}
+            <div class="vibe-section">
+              <h3>{{localize "PF2E_NPC_VIBES.VibeBook.NPCVibes"}}</h3>
+              <div class="vibe-list">
+                {{#each vibeData.npcVibes}}
+                  <div class="vibe-entry">
+                    <div class="vibe-character-name">{{npcName}}</div>
+                    <div class="vibe-direction">{{localize "PF2E_NPC_VIBES.VibeBook.Towards"}}</div>
+                    <div class="vibe-target-name">{{pcName}}</div>
+                    <div class="vibe-indicator {{vibe}}" style="background-color: {{vibeColor}}" title="{{vibeDisplay}}"></div>
+                    <div class="vibe-info">NPC Vibe</div>
+                  </div>
+                {{/each}}
+              </div>
+            </div>
+          {{/if}}
+        {{else}}
+          <div class="no-vibes-message">
+            <p>{{localize "PF2E_NPC_VIBES.VibeBook.NoVibes"}}</p>
+          </div>
+        {{/if}}
+      </div>
+    {{else}}
+      <!-- Player View -->
+      <div class="player-view">
+        {{#if vibeData.error}}
+          <div class="error-message">
+            <p>{{vibeData.error}}</p>
+          </div>
+        {{else if vibeData.hasVibes}}
+          <div class="vibe-section">
+            <h3>{{localize "PF2E_NPC_VIBES.VibeBook.PlayerView"}}</h3>
+            <div class="vibe-list">
+              {{#each vibeData.pcVibes}}
+                <div class="vibe-entry">
+                  <div class="vibe-character-name">{{npcName}}</div>
+                  <div class="vibe-indicator {{vibe}}" style="background-color: {{vibeColor}}" title="{{vibeDisplay}}"></div>
+                  <div class="vibe-display-name">{{vibeDisplay}}</div>
+                  <div class="vibe-connection">
+                    <select class="connection-select" data-pc-uuid="{{../character.uuid}}" data-npc-uuid="{{npcUuid}}">
+                      {{#each ../connectionLevels}}
+                        <option value="{{value}}" {{#if (eq value ../connection)}}selected{{/if}}>
+                          {{label}}
+                        </option>
+                      {{/each}}
+                    </select>
+                  </div>
+                </div>
+              {{/each}}
+            </div>
+          </div>
+        {{else}}
+          <div class="no-vibes-message">
+            <p>{{localize "PF2E_NPC_VIBES.VibeBook.NoVibes"}}</p>
+          </div>
+        {{/if}}
+      </div>
+    {{/if}}
+  {{/if}}
+</div>
+
+<style>
+.vibe-book-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.header-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.header-controls button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background: #f8f9fa;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.header-controls button:hover {
+  background: #e9ecef;
+}
+
+.vibe-entry {
+  display: grid;
+  grid-template-columns: 2fr auto 2fr auto 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  margin-bottom: 5px;
+}
+
+.player-view .vibe-entry {
+  grid-template-columns: 2fr auto auto 1fr;
+}
+
+.vibe-character-name,
+.vibe-target-name {
+  font-weight: bold;
+}
+
+.vibe-direction {
+  font-style: italic;
+  color: #666;
+  font-size: 12px;
+}
+
+.vibe-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #333;
+}
+
+.vibe-display-name {
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.connection-select {
+  min-width: 120px;
+  padding: 2px 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background: white;
+}
+
+.error-message {
+  text-align: center;
+  color: #e74c3c;
+  font-style: italic;
+  padding: 20px;
+}
+
+.no-vibes-message {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 40px 20px;
+}
+
+.vibe-info {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+}
+</style>

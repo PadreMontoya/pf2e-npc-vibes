@@ -1,0 +1,134 @@
+/* PF2E NPC Vibes Styles */
+
+/* Vibe Book Window */
+.pf2e-npc-vibes-window {
+  min-width: 400px;
+  min-height: 300px;
+}
+
+.pf2e-npc-vibes-window .window-content {
+  padding: 10px;
+}
+
+/* Vibe Book Content */
+.vibe-book-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.vibe-section {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.vibe-section h3 {
+  margin: 0 0 10px 0;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #ddd;
+}
+
+.vibe-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vibe-entry {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.vibe-character-name {
+  font-weight: bold;
+}
+
+.vibe-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #333;
+  display: inline-block;
+}
+
+.vibe-indicator.repulsed {
+  background-color: #ff4444;
+}
+
+.vibe-indicator.curious {
+  background-color: #ffdd44;
+}
+
+.vibe-indicator.awestruck {
+  background-color: #44ff44;
+}
+
+.vibe-indicator.none {
+  background-color: transparent;
+  border-style: dashed;
+}
+
+.connection-select {
+  min-width: 120px;
+}
+
+.no-vibes-message {
+  text-align: center;
+  font-style: italic;
+  color: #666;
+  padding: 20px;
+}
+
+/* Vibe Auras */
+.vibe-aura {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10;
+  animation: vibe-pulse 3s ease-in-out infinite;
+}
+
+.vibe-aura.repulsed {
+  background: radial-gradient(circle, rgba(255, 68, 68, 0.3) 0%, rgba(255, 68, 68, 0.1) 50%, transparent 100%);
+  box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+}
+
+.vibe-aura.curious {
+  background: radial-gradient(circle, rgba(255, 221, 68, 0.3) 0%, rgba(255, 221, 68, 0.1) 50%, transparent 100%);
+  box-shadow: 0 0 20px rgba(255, 221, 68, 0.5);
+}
+
+.vibe-aura.awestruck {
+  background: radial-gradient(circle, rgba(68, 255, 68, 0.3) 0%, rgba(68, 255, 68, 0.1) 50%, transparent 100%);
+  box-shadow: 0 0 20px rgba(68, 255, 68, 0.5);
+}
+
+@keyframes vibe-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .vibe-entry {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+  
+  .vibe-entry > * {
+    justify-self: start;
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": "pf2e-npc-vibes",
+  "title": "PF2E NPC Vibes",
+  "description": "Automatically generates and tracks emotional vibes between PCs and NPCs based on line of sight, with visual indicators and connection tracking.",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12.331",
+    "maximum": "12"
+  },
+  "authors": [
+    {
+      "name": "PadreMontoya",
+      "discord": "PadreMontoya",
+      "flags": {}
+    }
+  ],
+  "relationships": {
+    "systems": [
+      {
+        "id": "pf2e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "5.0.0"
+        }
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/pf2e-npc-vibes.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "packs": [],
+  "packFolders": [],
+  "socket": true,
+  "url": "https://github.com/PadreMontoya/pf2e-npc-vibes",
+  "manifest": "https://github.com/PadreMontoya/pf2e-npc-vibes/releases/latest/download/module.json",
+  "download": "https://github.com/PadreMontoya/pf2e-npc-vibes/releases/latest/download/pf2e-npc-vibes.zip",
+  "bugs": "https://github.com/PadreMontoya/pf2e-npc-vibes/issues",
+  "changelog": "https://github.com/PadreMontoya/pf2e-npc-vibes/blob/main/CHANGELOG.md",
+  "readme": "https://github.com/PadreMontoya/pf2e-npc-vibes/blob/main/README.md",
+  "license": "https://github.com/PadreMontoya/pf2e-npc-vibes/blob/main/LICENSE",
+  "flags": {
+    "hotReload": {
+      "extensions": ["css", "js", "hbs", "json"],
+      "paths": ["scripts", "styles", "templates", "lang"]
+    }
+  }
+}
