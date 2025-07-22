@@ -17,6 +17,10 @@
       "AuraSize": {
         "Name": "Aura Size",
         "Hint": "Size multiplier for vibe auras"
+      },
+      "DefaultSightRange": {
+        "Name": "Default Sight Range (feet)",
+        "Hint": "Default sight range for vibe detection when tokens don't have vision configured"
       }
     },
     "Vibes": {

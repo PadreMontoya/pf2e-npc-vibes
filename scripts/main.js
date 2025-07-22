@@ -87,6 +87,16 @@ function registerSettings() {
     default: 1.5
   });
 
+  game.settings.register(MODULE_ID, 'defaultSightRange', {
+    name: game.i18n.localize('PF2E_NPC_VIBES.Settings.DefaultSightRange.Name'),
+    hint: game.i18n.localize('PF2E_NPC_VIBES.Settings.DefaultSightRange.Hint'),
+    scope: 'world',
+    config: true,
+    type: Number,
+    range: { min: 30, max: 500, step: 10 },
+    default: 120
+  });
+
   // Internal settings for data storage
   game.settings.register(MODULE_ID, 'vibeData', {
     scope: 'world',

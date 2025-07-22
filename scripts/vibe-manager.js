@@ -86,13 +86,25 @@ export class VibeManager {
   /**
    * Check line of sight for a specific token
    * @param {Token} token - The token to check
+   * @param {Object} changes - The changes that triggered this check
    */
-  async checkLineOfSight(token) {
+  async checkLineOfSight(token, changes = {}) {
+    // Only check sight if position actually changed
+    const positionChanged = 'x' in changes || 'y' in changes;
+    const visionChanged = 'sight' in changes || 'hidden' in changes;
+
+    if (!positionChanged && !visionChanged) {
+      console.log(`🎭 PF2E NPC Vibes | Skipping sight check for ${token.name} - no relevant changes`);
+      return;
+    }
+
+    console.log(`🎭 PF2E NPC Vibes | Position/vision changed for ${token.name}, checking sight`);
+
     // Debounce sight checks
     if (this.sightCheckTimeout) {
       clearTimeout(this.sightCheckTimeout);
     }
-    
+
     this.sightCheckTimeout = setTimeout(async () => {
       await this.performSightCheck(token);
     }, this.sightCheckDelay);

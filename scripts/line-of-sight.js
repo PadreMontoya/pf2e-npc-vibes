@@ -83,8 +83,15 @@ export class LineOfSightDetector {
         return false;
       }
 
-      if (targetToken.document.hidden && !game.user.isGM) {
+      // Check if target is hidden from the source
+      if (targetToken.document.hidden) {
         console.log(`🔍 PF2E NPC Vibes | Target ${targetToken.name} is hidden`);
+        return false;
+      }
+
+      // Check if source can actually see (has vision enabled)
+      if (!sourceToken.document.sight?.enabled) {
+        console.log(`🔍 PF2E NPC Vibes | Source ${sourceToken.name} has no vision enabled`);
         return false;
       }
 
@@ -135,8 +142,11 @@ export class LineOfSightDetector {
     try {
       // Get the token's sight range from its vision settings
       const visionRange = token.document.sight?.range;
-      if (visionRange && visionRange > 0) return visionRange;
-      
+      if (visionRange && visionRange > 0) {
+        console.log(`🔍 PF2E NPC Vibes | ${token.name} vision range from token: ${visionRange}`);
+        return visionRange;
+      }
+
       // Fallback to actor's vision if available
       const actor = token.actor;
       if (actor) {
@@ -144,17 +154,28 @@ export class LineOfSightDetector {
         const senses = actor.system?.attributes?.senses;
         if (senses) {
           // Check for darkvision, low-light vision, etc.
-          if (senses.darkvision?.value > 0) return senses.darkvision.value;
-          if (senses.lowLightVision?.value > 0) return senses.lowLightVision.value;
+          if (senses.darkvision?.value > 0) {
+            const range = senses.darkvision.value * canvas.dimensions.distance;
+            console.log(`🔍 PF2E NPC Vibes | ${token.name} darkvision range: ${range} (${senses.darkvision.value} feet)`);
+            return range;
+          }
+          if (senses.lowLightVision?.value > 0) {
+            const range = senses.lowLightVision.value * canvas.dimensions.distance;
+            console.log(`🔍 PF2E NPC Vibes | ${token.name} low-light vision range: ${range} (${senses.lowLightVision.value} feet)`);
+            return range;
+          }
         }
       }
-      
-      // Default sight range (in grid units)
-      return canvas.dimensions.distance * 12; // 60 feet default
-      
+
+      // Default sight range from settings
+      const defaultFeet = game.settings.get(MODULE_ID, 'defaultSightRange');
+      const defaultRange = (defaultFeet / canvas.dimensions.distance) * canvas.dimensions.size;
+      console.log(`🔍 PF2E NPC Vibes | ${token.name} using default sight range: ${defaultRange} pixels (${defaultFeet} feet)`);
+      return defaultRange;
+
     } catch (error) {
       console.warn('PF2E NPC Vibes | Error getting sight range:', error);
-      return canvas.dimensions.distance * 12; // Fallback
+      return canvas.dimensions.distance * 24; // Fallback to 120 feet
     }
   }
 
@@ -162,9 +183,15 @@ export class LineOfSightDetector {
    * Calculate distance between two tokens
    */
   getTokenDistance(token1, token2) {
-    const dx = token1.x - token2.x;
-    const dy = token1.y - token2.y;
-    return Math.sqrt(dx * dx + dy * dy);
+    // Use token centers for more accurate distance calculation
+    const center1 = token1.center;
+    const center2 = token2.center;
+    const dx = center1.x - center2.x;
+    const dy = center1.y - center2.y;
+    const pixelDistance = Math.sqrt(dx * dx + dy * dy);
+
+    console.log(`🔍 PF2E NPC Vibes | Distance between ${token1.name} and ${token2.name}: ${pixelDistance} pixels`);
+    return pixelDistance;
   }
 
   /**
@@ -175,22 +202,47 @@ export class LineOfSightDetector {
       // Use Foundry's built-in line of sight detection
       const sourceCenter = sourceToken.center;
       const targetCenter = targetToken.center;
-      
+
+      console.log(`🔍 PF2E NPC Vibes | Checking LOS from (${sourceCenter.x}, ${sourceCenter.y}) to (${targetCenter.x}, ${targetCenter.y})`);
+
       // Check if there's a clear line of sight
       const ray = new Ray(sourceCenter, targetCenter);
-      
+
       // Test against walls and other obstacles
       const collision = canvas.walls.checkCollision(ray, { type: 'sight' });
-      
-      return !collision;
-      
+
+      console.log(`🔍 PF2E NPC Vibes | Wall collision detected: ${!!collision}`);
+
+      const hasLOS = !collision;
+
+      // Additional check: use Foundry's vision system if available
+      if (hasLOS && canvas.effects?.visibility) {
+        try {
+          // Check if target is visible from source position
+          const visibility = canvas.effects.visibility;
+          const sourceVision = sourceToken.vision;
+
+          if (sourceVision && visibility.testVisibility) {
+            const isVisible = visibility.testVisibility(targetCenter, { object: sourceToken });
+            console.log(`🔍 PF2E NPC Vibes | Foundry visibility test: ${isVisible}`);
+            return isVisible;
+          }
+        } catch (visError) {
+          console.warn('🔍 PF2E NPC Vibes | Visibility test failed, using wall collision result:', visError);
+        }
+      }
+
+      return hasLOS;
+
     } catch (error) {
-      console.warn('PF2E NPC Vibes | Error checking line of sight:', error);
-      
+      console.warn('🔍 PF2E NPC Vibes | Error checking line of sight:', error);
+
       // Fallback: simple distance check
       const distance = this.getTokenDistance(sourceToken, targetToken);
       const maxDistance = canvas.dimensions.distance * 6; // 30 feet fallback
-      return distance <= maxDistance;
+      const fallbackResult = distance <= maxDistance;
+      console.log(`🔍 PF2E NPC Vibes | Using fallback LOS check: ${fallbackResult} (distance: ${distance}, max: ${maxDistance})`);
+      return fallbackResult;
     }
   }
 

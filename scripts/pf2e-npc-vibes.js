@@ -54,15 +54,16 @@ export class PF2ENPCVibes {
    */
   async onTokenUpdate(token, changes, options, userId) {
     if (!this.shouldProcessToken(token)) return;
-    
+
     // Check if position or vision-related properties changed
-    const relevantChanges = ['x', 'y', 'rotation', 'hidden', 'vision'];
+    const relevantChanges = ['x', 'y', 'rotation', 'hidden', 'sight'];
     const hasRelevantChanges = relevantChanges.some(prop => prop in changes);
-    
+
     if (hasRelevantChanges) {
+      console.log(`🎭 PF2E NPC Vibes | Token ${token.name} updated with changes:`, Object.keys(changes));
       const vibeManager = game.modules.get(this.moduleId).vibeManager;
       if (vibeManager) {
-        await vibeManager.checkLineOfSight(token);
+        await vibeManager.checkLineOfSight(token, changes);
       }
     }
   }
