@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-07-22
+
+### Changed
+- Updated repository configuration and documentation
+- Improved GitHub Actions workflow for automated releases
+- Enhanced issue templates and contributing guidelines
+
+### Technical
+- Repository now properly configured with topics and settings
+- Release automation fully functional for Forge VTT compatibility
+
 ## [1.0.0] - 2025-07-22
 
 ### Added

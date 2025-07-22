@@ -208,14 +208,22 @@ determineVibeType(rollValue) {
 - MAJOR.MINOR.PATCH format
 - Update `module.json` version
 - Update CHANGELOG.md
+- **IMPORTANT**: Always increment version numbers for ANY improvements to ensure Forge VTT can detect updates
 
 ### Release Checklist
 1. Test thoroughly in multiple scenarios
 2. Update documentation
-3. Update version numbers
+3. Update version numbers in `module.json` and `CHANGELOG.md`
 4. Create release notes
-5. Tag the release
-6. Update manifest URLs
+5. Commit changes: `git add . && git commit -m "Version bump to vX.X.X"`
+6. Tag the release: `git tag vX.X.X`
+7. Push changes and tag: `git push origin main && git push origin vX.X.X`
+8. GitHub Actions will automatically create the release with assets
+
+### Forge VTT Compatibility
+- Forge VTT checks for new releases based on version numbers
+- Even minor documentation updates should increment the PATCH version
+- This ensures users get notified of updates through Forge VTT's module manager
 
 ## Community Guidelines
 
