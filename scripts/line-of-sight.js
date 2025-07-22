@@ -75,18 +75,35 @@ export class LineOfSightDetector {
    */
   performSightCheck(sourceToken, targetToken) {
     try {
+      console.log(`🔍 PF2E NPC Vibes | Sight check: ${sourceToken.name} -> ${targetToken.name}`);
+
       // Basic visibility checks
-      if (!this.areTokensOnSameScene(sourceToken, targetToken)) return false;
-      if (targetToken.document.hidden && !game.user.isGM) return false;
-      
+      if (!this.areTokensOnSameScene(sourceToken, targetToken)) {
+        console.log(`🔍 PF2E NPC Vibes | Different scenes - ${sourceToken.name}: ${sourceToken.scene?.id}, ${targetToken.name}: ${targetToken.scene?.id}`);
+        return false;
+      }
+
+      if (targetToken.document.hidden && !game.user.isGM) {
+        console.log(`🔍 PF2E NPC Vibes | Target ${targetToken.name} is hidden`);
+        return false;
+      }
+
       // Check if tokens are within sight range
-      if (!this.isWithinSightRange(sourceToken, targetToken)) return false;
-      
+      const withinRange = this.isWithinSightRange(sourceToken, targetToken);
+      if (!withinRange) {
+        const distance = this.getTokenDistance(sourceToken, targetToken);
+        const sightRange = this.getTokenSightRange(sourceToken);
+        console.log(`🔍 PF2E NPC Vibes | Out of range - Distance: ${distance}, Range: ${sightRange}`);
+        return false;
+      }
+
       // Check for line of sight using Foundry's vision system
-      return this.hasLineOfSight(sourceToken, targetToken);
-      
+      const hasLOS = this.hasLineOfSight(sourceToken, targetToken);
+      console.log(`🔍 PF2E NPC Vibes | Line of sight result: ${hasLOS}`);
+      return hasLOS;
+
     } catch (error) {
-      console.warn('PF2E NPC Vibes | Error in sight check:', error);
+      console.warn('🔍 PF2E NPC Vibes | Error in sight check:', error);
       return false;
     }
   }

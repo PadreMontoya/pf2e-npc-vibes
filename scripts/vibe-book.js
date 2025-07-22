@@ -25,25 +25,27 @@ export class VibeBookApplication extends Application {
 
   getData() {
     const data = super.getData();
-    const dataManager = game.modules.get(this.moduleId)?.vibeManager?.dataManager;
-    
+    const vibeManager = game.modules.get(this.moduleId)?.vibeManager;
+    const dataManager = vibeManager?.dataManager;
+
     if (!dataManager) {
       return { ...data, error: 'Module not properly initialized' };
     }
 
     const isGM = game.user.isGM;
     data.isGM = isGM;
-    
+
     if (isGM) {
-      // GM view - show all vibes
+      // GM view - show all vibes and debug info
       data.vibeData = this.getGMVibeData(dataManager);
+      data.debugData = this.getDebugData(vibeManager);
     } else {
       // Player view - show only their character's vibes
       data.vibeData = this.getPlayerVibeData(dataManager);
     }
 
     data.connectionLevels = this.getConnectionLevels();
-    
+
     return data;
   }
 
@@ -161,6 +163,36 @@ export class VibeBookApplication extends Application {
   }
 
   /**
+   * Get debug data for GM view
+   * @param {VibeManager} vibeManager - The vibe manager
+   * @returns {Object} - Debug data
+   */
+  getDebugData(vibeManager) {
+    if (!vibeManager) return { error: 'Vibe manager not available' };
+
+    const debugInfo = vibeManager.getDebugInfo();
+
+    return {
+      totalChecks: debugInfo.totalChecks,
+      recentChecks: debugInfo.recentChecks.map(check => ({
+        timestamp: new Date(check.timestamp).toLocaleTimeString(),
+        pcName: check.pcName,
+        npcName: check.npcName,
+        pcCanSeeNpc: check.pcCanSeeNpc,
+        npcCanSeePc: check.npcCanSeePc,
+        pcRoll: check.vibeResults.pcToNpc.roll,
+        pcVibe: check.vibeResults.pcToNpc.vibe,
+        pcHasVibe: check.vibeResults.pcToNpc.hasVibe,
+        npcRoll: check.vibeResults.npcToPc.roll,
+        npcVibe: check.vibeResults.npcToPc.vibe,
+        npcHasVibe: check.vibeResults.npcToPc.hasVibe
+      })),
+      stats: debugInfo.stats,
+      processedPairs: debugInfo.processedPairs
+    };
+  }
+
+  /**
    * Get available connection levels
    * @returns {Array} - Array of connection level objects
    */
@@ -211,6 +243,13 @@ export class VibeBookApplication extends Application {
 
     // Handle import button (GM only)
     html.find('.import-vibes').click(this._onImport.bind(this));
+
+    // Handle debug buttons (GM only)
+    html.find('.clear-debug').click(this._onClearDebug.bind(this));
+    html.find('.force-sight-check').click(this._onForceSightCheck.bind(this));
+
+    // Handle tab navigation
+    html.find('.tab-button').click(this._onTabClick.bind(this));
   }
 
   /**
@@ -322,5 +361,53 @@ export class VibeBookApplication extends Application {
     };
     
     input.click();
+  }
+
+  /**
+   * Handle clear debug button click
+   * @param {Event} event - The click event
+   */
+  _onClearDebug(event) {
+    if (!game.user.isGM) return;
+
+    const vibeManager = game.modules.get(this.moduleId)?.vibeManager;
+    if (vibeManager) {
+      vibeManager.clearDebugData();
+      this.render(true);
+      ui.notifications.info('Debug data cleared');
+    }
+  }
+
+  /**
+   * Handle force sight check button click
+   * @param {Event} event - The click event
+   */
+  async _onForceSightCheck(event) {
+    if (!game.user.isGM) return;
+
+    const vibeManager = game.modules.get(this.moduleId)?.vibeManager;
+    if (vibeManager) {
+      console.log('🎭 PF2E NPC Vibes | Force sight check triggered by GM');
+      await vibeManager.refreshAllLineOfSight();
+      this.render(true);
+      ui.notifications.info('Forced sight check completed - check console for details');
+    }
+  }
+
+  /**
+   * Handle tab button click
+   * @param {Event} event - The click event
+   */
+  _onTabClick(event) {
+    const clickedTab = event.currentTarget.dataset.tab;
+    const html = $(event.currentTarget).closest('.window-content');
+
+    // Update tab buttons
+    html.find('.tab-button').removeClass('active');
+    $(event.currentTarget).addClass('active');
+
+    // Update tab content
+    html.find('.tab-content').removeClass('active');
+    html.find(`.${clickedTab}-tab`).addClass('active');
   }
 }

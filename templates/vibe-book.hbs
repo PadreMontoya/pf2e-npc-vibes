@@ -21,8 +21,14 @@
     </div>
 
     {{#if isGM}}
-      <!-- GM View -->
+      <!-- GM View with Tabs -->
       <div class="gm-view">
+        <div class="tab-navigation">
+          <button class="tab-button active" data-tab="vibes">Vibes</button>
+          <button class="tab-button" data-tab="debug">Debug</button>
+        </div>
+
+        <div class="tab-content vibes-tab active">
         {{#if vibeData.hasVibes}}
           <!-- PC Vibes Section -->
           {{#if vibeData.pcVibes}}
@@ -72,6 +78,84 @@
             <p>{{localize "PF2E_NPC_VIBES.VibeBook.NoVibes"}}</p>
           </div>
         {{/if}}
+        </div>
+
+        <!-- Debug Tab -->
+        <div class="tab-content debug-tab">
+          <div class="debug-section">
+            <h3>Debug Information</h3>
+            <div class="debug-controls">
+              <button type="button" class="force-sight-check">
+                <i class="fas fa-eye"></i> Force Sight Check
+              </button>
+              <button type="button" class="clear-debug">
+                <i class="fas fa-trash"></i> Clear Debug Data
+              </button>
+            </div>
+
+            {{#if debugData}}
+              <div class="debug-stats">
+                <h4>Statistics</h4>
+                <div class="stats-grid">
+                  <div class="stat-item">
+                    <span class="stat-label">Total Checks:</span>
+                    <span class="stat-value">{{debugData.totalChecks}}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Total Vibes:</span>
+                    <span class="stat-value">{{debugData.stats.totalVibes}}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Repulsed:</span>
+                    <span class="stat-value">{{debugData.stats.repulsedCount}}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Curious:</span>
+                    <span class="stat-value">{{debugData.stats.curiousCount}}</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Awestruck:</span>
+                    <span class="stat-value">{{debugData.stats.awestruckCount}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="debug-recent-checks">
+                <h4>Recent Vibe Checks</h4>
+                {{#if debugData.recentChecks}}
+                  <div class="debug-checks-list">
+                    {{#each debugData.recentChecks}}
+                      <div class="debug-check-entry">
+                        <div class="check-header">
+                          <span class="check-time">{{timestamp}}</span>
+                          <span class="check-characters">{{pcName}} ↔ {{npcName}}</span>
+                        </div>
+                        <div class="check-details">
+                          <div class="sight-info">
+                            <span>PC can see NPC: {{pcCanSeeNpc}}</span>
+                            <span>NPC can see PC: {{npcCanSeePc}}</span>
+                          </div>
+                          <div class="roll-results">
+                            <div class="pc-result">
+                              <strong>{{pcName}}:</strong> Roll {{pcRoll}} → {{pcVibe}} {{#if pcHasVibe}}✨{{/if}}
+                            </div>
+                            <div class="npc-result">
+                              <strong>{{npcName}}:</strong> Roll {{npcRoll}} → {{npcVibe}} {{#if npcHasVibe}}✨{{/if}}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {{/each}}
+                  </div>
+                {{else}}
+                  <p class="no-checks-message">No vibe checks recorded yet. Move PCs and NPCs into line of sight to trigger checks.</p>
+                {{/if}}
+              </div>
+            {{else}}
+              <p class="debug-error">Debug data not available</p>
+            {{/if}}
+          </div>
+        </div>
       </div>
     {{else}}
       <!-- Player View -->
@@ -204,5 +288,158 @@
   font-size: 12px;
   color: #666;
   font-style: italic;
+}
+
+/* Tab Navigation */
+.tab-navigation {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 15px;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  border: none;
+  background: #f8f9fa;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  font-weight: bold;
+}
+
+.tab-button.active {
+  background: white;
+  border-bottom-color: #007bff;
+  color: #007bff;
+}
+
+.tab-button:hover {
+  background: #e9ecef;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Debug Section */
+.debug-section h3, .debug-section h4 {
+  color: #333;
+  margin: 15px 0 10px 0;
+}
+
+.debug-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.debug-controls button {
+  padding: 8px 15px;
+  border: 1px solid #007bff;
+  background: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.debug-controls button:hover {
+  background: #0056b3;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+}
+
+.stat-label {
+  font-weight: bold;
+}
+
+.stat-value {
+  color: #007bff;
+  font-weight: bold;
+}
+
+.debug-checks-list {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+}
+
+.debug-check-entry {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  background: #fafafa;
+}
+
+.debug-check-entry:last-child {
+  border-bottom: none;
+}
+
+.check-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.check-time {
+  color: #666;
+  font-size: 12px;
+}
+
+.check-characters {
+  color: #333;
+}
+
+.check-details {
+  font-size: 12px;
+}
+
+.sight-info {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 5px;
+  color: #666;
+}
+
+.roll-results {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pc-result, .npc-result {
+  font-family: monospace;
+}
+
+.no-checks-message {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 20px;
+}
+
+.debug-error {
+  color: #dc3545;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
 }
 </style>
