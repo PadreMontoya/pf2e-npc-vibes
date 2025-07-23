@@ -97,6 +97,15 @@ function registerSettings() {
     default: 120
   });
 
+  game.settings.register(MODULE_ID, 'ignoreWalls', {
+    name: game.i18n.localize('PF2E_NPC_VIBES.Settings.IgnoreWalls.Name'),
+    hint: game.i18n.localize('PF2E_NPC_VIBES.Settings.IgnoreWalls.Hint'),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: false
+  });
+
   // Internal settings for data storage
   game.settings.register(MODULE_ID, 'vibeData', {
     scope: 'world',

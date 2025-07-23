@@ -21,6 +21,10 @@
       "DefaultSightRange": {
         "Name": "Default Sight Range (feet)",
         "Hint": "Default sight range for vibe detection when tokens don't have vision configured"
+      },
+      "IgnoreWalls": {
+        "Name": "Ignore Walls for Vibe Detection",
+        "Hint": "If enabled, vibes will be generated regardless of walls between characters"
       }
     },
     "Vibes": {

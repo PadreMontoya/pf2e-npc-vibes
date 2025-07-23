@@ -89,11 +89,14 @@ export class LineOfSightDetector {
         return false;
       }
 
-      // Check if source can actually see (has vision enabled)
-      if (!sourceToken.document.sight?.enabled) {
-        console.log(`🔍 PF2E NPC Vibes | Source ${sourceToken.name} has no vision enabled`);
+      // For vibe detection, assume all characters can see unless explicitly disabled
+      // Only check vision for PCs, assume NPCs can see by default
+      if (sourceToken.actor?.type === 'character' && !sourceToken.document.sight?.enabled) {
+        console.log(`🔍 PF2E NPC Vibes | PC ${sourceToken.name} has no vision enabled`);
         return false;
       }
+
+      console.log(`🔍 PF2E NPC Vibes | ${sourceToken.name} vision check passed (type: ${sourceToken.actor?.type})`);
 
       // Check if tokens are within sight range
       const withinRange = this.isWithinSightRange(sourceToken, targetToken);
@@ -195,54 +198,52 @@ export class LineOfSightDetector {
   }
 
   /**
-   * Check for actual line of sight using Foundry's vision system
+   * Check for actual line of sight using simplified detection for vibe purposes
    */
   hasLineOfSight(sourceToken, targetToken) {
     try {
-      // Use Foundry's built-in line of sight detection
       const sourceCenter = sourceToken.center;
       const targetCenter = targetToken.center;
 
       console.log(`🔍 PF2E NPC Vibes | Checking LOS from (${sourceCenter.x}, ${sourceCenter.y}) to (${targetCenter.x}, ${targetCenter.y})`);
 
-      // Check if there's a clear line of sight
+      // Check if we should ignore walls for vibe detection
+      const ignoreWalls = game.settings.get(MODULE_ID, 'ignoreWalls');
+
+      if (ignoreWalls) {
+        console.log(`🔍 PF2E NPC Vibes | Ignoring walls for vibe detection (setting enabled)`);
+        return true;
+      }
+
+      // For vibe detection, be more permissive - only block if there are actual sight-blocking walls
       const ray = new Ray(sourceCenter, targetCenter);
 
-      // Test against walls and other obstacles
-      const collision = canvas.walls.checkCollision(ray, { type: 'sight' });
+      // Check for walls that specifically block sight
+      let hasBlockingWall = false;
 
-      console.log(`🔍 PF2E NPC Vibes | Wall collision detected: ${!!collision}`);
+      try {
+        // Use a simpler collision check
+        const collision = canvas.walls.checkCollision(ray, { type: 'sight' });
+        hasBlockingWall = !!collision;
 
-      const hasLOS = !collision;
-
-      // Additional check: use Foundry's vision system if available
-      if (hasLOS && canvas.effects?.visibility) {
-        try {
-          // Check if target is visible from source position
-          const visibility = canvas.effects.visibility;
-          const sourceVision = sourceToken.vision;
-
-          if (sourceVision && visibility.testVisibility) {
-            const isVisible = visibility.testVisibility(targetCenter, { object: sourceToken });
-            console.log(`🔍 PF2E NPC Vibes | Foundry visibility test: ${isVisible}`);
-            return isVisible;
-          }
-        } catch (visError) {
-          console.warn('🔍 PF2E NPC Vibes | Visibility test failed, using wall collision result:', visError);
+        if (hasBlockingWall) {
+          console.log(`🔍 PF2E NPC Vibes | Blocked by wall collision`);
         }
+      } catch (wallError) {
+        console.warn('🔍 PF2E NPC Vibes | Wall check failed, assuming clear:', wallError);
+        hasBlockingWall = false;
       }
+
+      const hasLOS = !hasBlockingWall;
+      console.log(`🔍 PF2E NPC Vibes | Line of sight result: ${hasLOS} (blocking wall: ${hasBlockingWall})`);
 
       return hasLOS;
 
     } catch (error) {
-      console.warn('🔍 PF2E NPC Vibes | Error checking line of sight:', error);
+      console.warn('🔍 PF2E NPC Vibes | Error checking line of sight, assuming clear:', error);
 
-      // Fallback: simple distance check
-      const distance = this.getTokenDistance(sourceToken, targetToken);
-      const maxDistance = canvas.dimensions.distance * 6; // 30 feet fallback
-      const fallbackResult = distance <= maxDistance;
-      console.log(`🔍 PF2E NPC Vibes | Using fallback LOS check: ${fallbackResult} (distance: ${distance}, max: ${maxDistance})`);
-      return fallbackResult;
+      // If there's any error, assume line of sight is clear for vibe detection
+      return true;
     }
   }
 

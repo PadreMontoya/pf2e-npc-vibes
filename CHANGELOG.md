@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2025-07-22
+
+### Fixed
+- Fixed overly strict wall collision detection that was blocking valid line of sight
+- NPCs now assumed to have vision enabled by default for vibe detection
+- Simplified line of sight detection to be more permissive for vibe generation
+- Fixed false wall collision detection in open areas
+
+### Changed
+- More permissive vision requirements for vibe detection
+- Simplified collision detection for better reliability
+- Assume all characters can see for vibe purposes unless explicitly hidden
+
 ## [1.0.3] - 2025-07-22
 
 ### Fixed
