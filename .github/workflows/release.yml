@@ -6,70 +6,78 @@ on:
       - 'v*'
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: write
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Extract version from tag
       id: extract_version
       run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-      
-    - name: Update module.json version
+
+    - name: Verify module.json version matches tag
       run: |
-        sed -i 's/"version": ".*"/"version": "${{ steps.extract_version.outputs.VERSION }}"/' module.json
-        
+        MODULE_VERSION=$(grep '"version"' module.json | sed 's/.*"version": "\([^"]*\)".*/\1/')
+        TAG_VERSION="${{ steps.extract_version.outputs.VERSION }}"
+        echo "Module version: $MODULE_VERSION"
+        echo "Tag version: $TAG_VERSION"
+        if [ "$MODULE_VERSION" != "$TAG_VERSION" ]; then
+          echo "Error: module.json version ($MODULE_VERSION) does not match tag version ($TAG_VERSION)"
+          exit 1
+        fi
+
     - name: Create module archive
       run: |
-        zip -r pf2e-npc-vibes.zip . \
-          -x "*.git*" \
-          -x "*.github*" \
-          -x "*.md" \
-          -x "node_modules/*" \
-          -x "*.log"
-          
+        zip -r pf2e-npc-vibes.zip \
+          module.json \
+          scripts/ \
+          styles/ \
+          templates/ \
+          lang/ \
+          LICENSE \
+          CHANGELOG.md \
+          README.md
+
+    - name: Generate release notes from changelog
+      id: changelog
+      run: |
+        # Extract the latest version's changelog
+        VERSION="${{ steps.extract_version.outputs.VERSION }}"
+
+        # Create release notes
+        cat > release_notes.md << 'EOF'
+        ## PF2E NPC Vibes v${{ steps.extract_version.outputs.VERSION }}
+
+        ### Installation
+        **Manifest URL:** `https://github.com/PadreMontoya/pf2e-npc-vibes/releases/latest/download/module.json`
+
+        ### Compatibility
+        - **Foundry VTT:** Version 12+
+        - **System:** Pathfinder 2E (PF2E) v5.0.0+
+
+        ### Changes
+        Please see [CHANGELOG.md](https://github.com/PadreMontoya/pf2e-npc-vibes/blob/main/CHANGELOG.md) for detailed changes in this version.
+
+        ### Support
+        - [Installation Guide](https://github.com/PadreMontoya/pf2e-npc-vibes/blob/main/INSTALLATION.md)
+        - [Usage Guide](https://github.com/PadreMontoya/pf2e-npc-vibes/blob/main/USAGE.md)
+        - [Issues](https://github.com/PadreMontoya/pf2e-npc-vibes/issues)
+        EOF
+
     - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ steps.extract_version.outputs.VERSION }}
-        body: |
-          ## Changes in this Release
-          
-          Please see [CHANGELOG.md](https://github.com/PadreMontoya/pf2e-npc-vibes/blob/main/CHANGELOG.md) for detailed changes.
-          
-          ## Installation
-          
-          **Manifest URL:** `https://github.com/PadreMontoya/pf2e-npc-vibes/releases/latest/download/module.json`
-          
-          ## Compatibility
-          
-          - **Foundry VTT:** v12+
-          - **PF2E System:** v5.0.0+
+        tag_name: ${{ github.ref_name }}
+        name: Release ${{ steps.extract_version.outputs.VERSION }}
+        body_path: release_notes.md
         draft: false
         prerelease: false
-        
-    - name: Upload module.json
-      uses: actions/upload-release-asset@v1
+        files: |
+          module.json
+          pf2e-npc-vibes.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./module.json
-        asset_name: module.json
-        asset_content_type: application/json
-        
-    - name: Upload module archive
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./pf2e-npc-vibes.zip
-        asset_name: pf2e-npc-vibes.zip
-        asset_content_type: application/zip

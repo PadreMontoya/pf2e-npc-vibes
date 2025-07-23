@@ -60,6 +60,27 @@ The module includes several settings accessible through Foundry's module setting
 - Customize vibe roll thresholds
 - Configure notification preferences
 
+## Development
+
+This module is built for Foundry VTT v12+ and the Pathfinder 2E system v5.0.0+.
+
+### Automated Releases
+
+This repository uses GitHub Actions for automated releases:
+
+1. **Update version** in `module.json` and `CHANGELOG.md`
+2. **Commit changes**: `git add . && git commit -m "Version bump to vX.X.X"`
+3. **Create and push tag**: `git tag vX.X.X && git push origin main && git push origin vX.X.X`
+4. **GitHub Actions automatically**:
+   - Validates the module structure
+   - Creates a release with proper assets
+   - Uploads `module.json` and `pf2e-npc-vibes.zip`
+   - Updates the manifest URL for Forge VTT
+
+### Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
 ## Support
 
 - **Issues**: [GitHub Issues](https://github.com/PadreMontoya/pf2e-npc-vibes/issues)

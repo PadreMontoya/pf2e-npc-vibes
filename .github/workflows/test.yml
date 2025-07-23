@@ -1,0 +1,86 @@
+name: Test Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Validate module.json
+      run: |
+        # Check if module.json is valid JSON
+        if ! jq empty module.json; then
+          echo "Error: module.json is not valid JSON"
+          exit 1
+        fi
+        echo "✅ module.json is valid JSON"
+        
+        # Extract and display key information
+        NAME=$(jq -r '.name' module.json)
+        VERSION=$(jq -r '.version' module.json)
+        TITLE=$(jq -r '.title' module.json)
+        
+        echo "Module Name: $NAME"
+        echo "Version: $VERSION"
+        echo "Title: $TITLE"
+        
+    - name: Check required files
+      run: |
+        echo "Checking required files..."
+        
+        # Check for required files
+        REQUIRED_FILES=(
+          "module.json"
+          "scripts/main.js"
+          "styles/pf2e-npc-vibes.css"
+          "templates/vibe-book.hbs"
+          "lang/en.json"
+          "README.md"
+          "CHANGELOG.md"
+          "LICENSE"
+        )
+        
+        for file in "${REQUIRED_FILES[@]}"; do
+          if [ -f "$file" ]; then
+            echo "✅ $file exists"
+          else
+            echo "❌ $file is missing"
+            exit 1
+          fi
+        done
+        
+    - name: Test module archive creation
+      run: |
+        echo "Creating test module archive..."
+        zip -r test-pf2e-npc-vibes.zip \
+          module.json \
+          scripts/ \
+          styles/ \
+          templates/ \
+          lang/ \
+          LICENSE \
+          CHANGELOG.md \
+          README.md
+          
+        # Check archive contents
+        echo "Archive contents:"
+        unzip -l test-pf2e-npc-vibes.zip
+        
+        # Check archive size
+        SIZE=$(stat -c%s test-pf2e-npc-vibes.zip)
+        echo "Archive size: $SIZE bytes"
+        
+        if [ $SIZE -lt 1000 ]; then
+          echo "❌ Archive seems too small"
+          exit 1
+        fi
+        
+        echo "✅ Archive created successfully"
