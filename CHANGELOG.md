@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.6] - 2025-07-22
+
+### Added
+- Automated GitHub Actions workflow for releases
+- Test workflow to validate module structure on commits
+- Automated asset upload (module.json and zip file) on version tags
+
+### Changed
+- Updated documentation with automated release process
+- Streamlined release workflow for better maintainability
+
+### Technical
+- No longer requires manual asset uploads to GitHub releases
+- Automated validation of module structure and JSON validity
+
 ## [1.0.5] - 2025-07-22
 
 ### Fixed
