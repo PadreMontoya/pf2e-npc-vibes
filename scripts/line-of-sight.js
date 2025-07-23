@@ -84,14 +84,14 @@ export class LineOfSightDetector {
       }
 
       // Check if target is hidden from the source
-      if (targetToken.document.hidden) {
+      if (targetToken.document?.hidden) {
         console.log(`🔍 PF2E NPC Vibes | Target ${targetToken.name} is hidden`);
         return false;
       }
 
       // For vibe detection, assume all characters can see unless explicitly disabled
       // Only check vision for PCs, assume NPCs can see by default
-      if (sourceToken.actor?.type === 'character' && !sourceToken.document.sight?.enabled) {
+      if (sourceToken.actor?.type === 'character' && !sourceToken.document?.sight?.enabled) {
         console.log(`🔍 PF2E NPC Vibes | PC ${sourceToken.name} has no vision enabled`);
         return false;
       }
@@ -143,6 +143,12 @@ export class LineOfSightDetector {
    */
   getTokenSightRange(token) {
     try {
+      // Ensure we have a valid token and document
+      if (!token || !token.document) {
+        console.warn(`🔍 PF2E NPC Vibes | Invalid token for sight range calculation`);
+        return this.getDefaultSightRange();
+      }
+
       // Get the token's sight range from its vision settings
       const visionRange = token.document.sight?.range;
       if (visionRange && visionRange > 0) {
@@ -152,18 +158,18 @@ export class LineOfSightDetector {
 
       // Fallback to actor's vision if available
       const actor = token.actor;
-      if (actor) {
+      if (actor && actor.system) {
         // For PF2E, check for darkvision or other vision types
-        const senses = actor.system?.attributes?.senses;
+        const senses = actor.system.attributes?.senses;
         if (senses) {
           // Check for darkvision, low-light vision, etc.
           if (senses.darkvision?.value > 0) {
-            const range = senses.darkvision.value * canvas.dimensions.distance;
+            const range = senses.darkvision.value * (canvas.dimensions?.distance || 5);
             console.log(`🔍 PF2E NPC Vibes | ${token.name} darkvision range: ${range} (${senses.darkvision.value} feet)`);
             return range;
           }
           if (senses.lowLightVision?.value > 0) {
-            const range = senses.lowLightVision.value * canvas.dimensions.distance;
+            const range = senses.lowLightVision.value * (canvas.dimensions?.distance || 5);
             console.log(`🔍 PF2E NPC Vibes | ${token.name} low-light vision range: ${range} (${senses.lowLightVision.value} feet)`);
             return range;
           }
@@ -171,14 +177,28 @@ export class LineOfSightDetector {
       }
 
       // Default sight range from settings
-      const defaultFeet = game.settings.get(MODULE_ID, 'defaultSightRange');
-      const defaultRange = (defaultFeet / canvas.dimensions.distance) * canvas.dimensions.size;
-      console.log(`🔍 PF2E NPC Vibes | ${token.name} using default sight range: ${defaultRange} pixels (${defaultFeet} feet)`);
-      return defaultRange;
+      return this.getDefaultSightRange();
 
     } catch (error) {
-      console.warn('PF2E NPC Vibes | Error getting sight range:', error);
-      return canvas.dimensions.distance * 24; // Fallback to 120 feet
+      console.warn('🔍 PF2E NPC Vibes | Error getting sight range:', error);
+      return this.getDefaultSightRange();
+    }
+  }
+
+  /**
+   * Get the default sight range with proper error handling
+   */
+  getDefaultSightRange() {
+    try {
+      const defaultFeet = game.settings.get(MODULE_ID, 'defaultSightRange') || 300; // Increased default
+      const gridSize = canvas.dimensions?.size || 100;
+      const gridDistance = canvas.dimensions?.distance || 5;
+      const defaultRange = (defaultFeet / gridDistance) * gridSize;
+      console.log(`🔍 PF2E NPC Vibes | Using default sight range: ${defaultRange} pixels (${defaultFeet} feet)`);
+      return defaultRange;
+    } catch (error) {
+      console.warn('🔍 PF2E NPC Vibes | Error getting default sight range, using fallback:', error);
+      return 6000; // 6000 pixels fallback (very generous)
     }
   }
 

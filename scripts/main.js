@@ -93,8 +93,8 @@ function registerSettings() {
     scope: 'world',
     config: true,
     type: Number,
-    range: { min: 30, max: 500, step: 10 },
-    default: 120
+    range: { min: 30, max: 1000, step: 10 },
+    default: 300
   });
 
   game.settings.register(MODULE_ID, 'ignoreWalls', {

@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5] - 2025-07-22
+
+### Fixed
+- Fixed critical JavaScript errors with undefined token properties
+- Fixed sight range calculation errors causing crashes
+- Improved error handling for token document access
+- Fixed distance calculation to use proper grid measurements
+- Increased default sight range to 300 feet for better detection
+
+### Changed
+- More robust token property access with null checks
+- Simplified sight range calculation with better fallbacks
+- Enhanced error handling throughout the sight detection system
+
 ## [1.0.4] - 2025-07-22
 
 ### Fixed
