@@ -103,7 +103,7 @@ function registerSettings() {
     scope: 'world',
     config: true,
     type: Boolean,
-    default: false
+    default: true
   });
 
   // Internal settings for data storage

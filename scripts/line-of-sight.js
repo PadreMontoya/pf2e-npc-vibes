@@ -144,8 +144,13 @@ export class LineOfSightDetector {
   getTokenSightRange(token) {
     try {
       // Ensure we have a valid token and document
-      if (!token || !token.document) {
-        console.warn(`🔍 PF2E NPC Vibes | Invalid token for sight range calculation`);
+      if (!token || !token.document || !token.name) {
+        console.warn(`🔍 PF2E NPC Vibes | Invalid token for sight range calculation:`, {
+          hasToken: !!token,
+          hasDocument: !!token?.document,
+          hasName: !!token?.name,
+          tokenId: token?.id
+        });
         return this.getDefaultSightRange();
       }
 
@@ -231,7 +236,7 @@ export class LineOfSightDetector {
       const ignoreWalls = game.settings.get(MODULE_ID, 'ignoreWalls');
 
       if (ignoreWalls) {
-        console.log(`🔍 PF2E NPC Vibes | Ignoring walls for vibe detection (setting enabled)`);
+        console.log(`🔍 PF2E NPC Vibes | ✅ Ignoring walls for vibe detection (setting enabled)`);
         return true;
       }
 
@@ -247,7 +252,9 @@ export class LineOfSightDetector {
         hasBlockingWall = !!collision;
 
         if (hasBlockingWall) {
-          console.log(`🔍 PF2E NPC Vibes | Blocked by wall collision`);
+          console.log(`🔍 PF2E NPC Vibes | ❌ Blocked by wall collision`);
+        } else {
+          console.log(`🔍 PF2E NPC Vibes | ✅ No wall collision detected`);
         }
       } catch (wallError) {
         console.warn('🔍 PF2E NPC Vibes | Wall check failed, assuming clear:', wallError);
