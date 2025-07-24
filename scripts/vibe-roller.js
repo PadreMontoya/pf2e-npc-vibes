@@ -61,13 +61,12 @@ export class VibeRoller {
    * @returns {Object} - Single vibe roll result
    */
   async rollSingleVibe(sourceToken, targetToken, sourceType) {
-    // Roll 1d20
-    const roll = await new Roll('1d20').evaluate();
-    const rollValue = roll.total;
-    
+    // Generate random number 1-20 using Math.random()
+    const rollValue = Math.floor(Math.random() * 20) + 1;
+
     // Determine vibe type
     const vibeType = this.determineVibeType(rollValue);
-    
+
     const result = {
       sourceToken,
       targetToken,
@@ -75,12 +74,12 @@ export class VibeRoller {
       roll: rollValue,
       vibeType,
       hasVibe: vibeType !== this.VIBE_TYPES.NONE,
-      rollObject: roll
+      rollObject: null // No Foundry roll object needed
     };
 
     // Add flavor text
     result.flavorText = this.getVibeFlavorText(result);
-    
+
     return result;
   }
 

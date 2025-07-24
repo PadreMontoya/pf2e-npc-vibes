@@ -46,6 +46,14 @@ export class VibeBookApplication extends Application {
 
     data.connectionLevels = this.getConnectionLevels();
 
+    // Enhanced debugging for vibe data issues
+    console.log('🎭 PF2E NPC Vibes | Vibe Book getData() called');
+    console.log('🎭 PF2E NPC Vibes | Is GM:', isGM);
+    console.log('🎭 PF2E NPC Vibes | Raw vibe data:', data.vibeData);
+    console.log('🎭 PF2E NPC Vibes | Has vibes:', data.vibeData?.hasVibes);
+    console.log('🎭 PF2E NPC Vibes | PC vibes count:', data.vibeData?.pcVibes?.length || 0);
+    console.log('🎭 PF2E NPC Vibes | NPC vibes count:', data.vibeData?.npcVibes?.length || 0);
+
     return data;
   }
 
@@ -63,6 +71,8 @@ export class VibeBookApplication extends Application {
     };
 
     console.log('🎭 PF2E NPC Vibes | GM Vibe Data - All vibes:', allVibes);
+    console.log('🎭 PF2E NPC Vibes | GM Vibe Data - PC vibes keys:', Object.keys(allVibes.pcVibes || {}));
+    console.log('🎭 PF2E NPC Vibes | GM Vibe Data - NPC vibes keys:', Object.keys(allVibes.npcVibes || {}));
 
     // Process PC vibes towards NPCs
     for (const [pcUuid, npcVibes] of Object.entries(allVibes.pcVibes || {})) {

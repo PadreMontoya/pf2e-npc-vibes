@@ -33,8 +33,8 @@ export class MessagingSystem {
     // Create the message content
     const messageContent = this.createVibeMessageContent(vibeResult, isFirstSight);
     
-    // Send the whispered message
-    await this.sendWhisperedMessage(messageContent, recipients, rollObject);
+    // Send the whispered message (no roll object needed with Math.random)
+    await this.sendWhisperedMessage(messageContent, recipients);
   }
 
   /**
@@ -115,9 +115,8 @@ export class MessagingSystem {
    * Send a whispered message to specific recipients
    * @param {string} content - HTML content of the message
    * @param {Array} recipients - Array of user IDs
-   * @param {Roll} roll - Optional roll object to display
    */
-  async sendWhisperedMessage(content, recipients, roll = null) {
+  async sendWhisperedMessage(content, recipients) {
     const messageData = {
       content: content,
       whisper: recipients,
@@ -129,11 +128,7 @@ export class MessagingSystem {
       }
     };
 
-    // Add roll data if provided
-    if (roll) {
-      messageData.rolls = [roll];
-      messageData.sound = CONFIG.sounds.dice;
-    }
+    // No dice sounds or roll objects with Math.random approach
 
     try {
       await ChatMessage.create(messageData);

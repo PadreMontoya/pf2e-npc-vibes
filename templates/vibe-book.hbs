@@ -29,11 +29,16 @@
         </div>
 
         <div class="tab-content vibes-tab active">
-        {{#if vibeData.hasVibes}}
+          <!-- Debug Info -->
+          <div style="background: #f0f0f0; padding: 10px; margin-bottom: 10px; font-size: 12px; border-radius: 4px;">
+            <strong>Debug:</strong> hasVibes={{vibeData.hasVibes}}, pcVibes={{vibeData.pcVibes.length}}, npcVibes={{vibeData.npcVibes.length}}
+          </div>
+
+        {{#if (or vibeData.hasVibes vibeData.pcVibes vibeData.npcVibes)}}
           <!-- PC Vibes Section -->
           {{#if vibeData.pcVibes}}
             <div class="vibe-section">
-              <h3>PC → NPC Vibes</h3>
+              <h3>PC → NPC Vibes ({{vibeData.pcVibes.length}} entries)</h3>
               <div class="vibe-table">
                 <div class="vibe-table-header">
                   <div class="col-source">Source (PC)</div>
@@ -67,7 +72,7 @@
           <!-- NPC Vibes Section -->
           {{#if vibeData.npcVibes}}
             <div class="vibe-section">
-              <h3>NPC → PC Vibes</h3>
+              <h3>NPC → PC Vibes ({{vibeData.npcVibes.length}} entries)</h3>
               <div class="vibe-table">
                 <div class="vibe-table-header">
                   <div class="col-source">Source (NPC)</div>
