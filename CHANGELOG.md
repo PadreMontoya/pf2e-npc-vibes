@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2025-07-24
+
+### Fixed
+- Enhanced debugging for Vibe Book data retrieval issues
+- Added comprehensive logging to identify disconnect between data storage and display
+- Improved GM detection and data flow diagnostics
+- Added detailed debugging for vibe data structure and actor UUID resolution
+
+### Debug
+- Added extensive console logging to track data flow from storage to display
+- Enhanced debugging for actor lookup and UUID matching
+- Improved diagnostics for GM permission detection
+
 ## [1.1.1] - 2025-07-24
 
 ### Added

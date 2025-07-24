@@ -19,7 +19,10 @@ export class DataManager {
    */
   getVibeData() {
     if (!this.dataCache) {
+      console.log('🎭 PF2E NPC Vibes | Loading vibe data from settings...');
       this.dataCache = game.settings.get(this.moduleId, 'vibeData');
+      console.log('🎭 PF2E NPC Vibes | Raw settings data:', this.dataCache);
+      console.log('🎭 PF2E NPC Vibes | Settings data type:', typeof this.dataCache);
     }
     return this.dataCache;
   }
@@ -221,13 +224,24 @@ export class DataManager {
    * @returns {Object} - Complete vibe data structure
    */
   getAllVibes() {
+    console.log('🎭 PF2E NPC Vibes | DataManager.getAllVibes() called');
+
     const data = this.getVibeData();
-    return {
-      pcVibes: data.pcVibes,
-      npcVibes: data.npcVibes,
-      connections: data.connections,
-      npcRegistry: data.npcRegistry
+    console.log('🎭 PF2E NPC Vibes | Raw vibe data from getVibeData():', data);
+    console.log('🎭 PF2E NPC Vibes | Data type:', typeof data);
+    console.log('🎭 PF2E NPC Vibes | Data keys:', Object.keys(data || {}));
+    console.log('🎭 PF2E NPC Vibes | PC vibes object:', data?.pcVibes);
+    console.log('🎭 PF2E NPC Vibes | NPC vibes object:', data?.npcVibes);
+
+    const result = {
+      pcVibes: data.pcVibes || {},
+      npcVibes: data.npcVibes || {},
+      connections: data.connections || {},
+      npcRegistry: data.npcRegistry || {}
     };
+
+    console.log('🎭 PF2E NPC Vibes | Returning getAllVibes result:', result);
+    return result;
   }
 
   /**
