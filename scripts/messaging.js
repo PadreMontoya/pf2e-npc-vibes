@@ -21,9 +21,21 @@ export class MessagingSystem {
     }
 
     const { sourceToken, targetToken, sourceType, vibeType, flavorText, rollObject } = vibeResult;
-    
-    // Only send notifications for significant vibes
-    if (vibeType === 'none') return;
+
+    // Check if we should only show significant vibes
+    const onlySignificantVibes = game.settings.get(this.moduleId, 'onlySignificantVibes');
+
+    if (onlySignificantVibes && vibeType === 'none') {
+      console.log(`🎭 PF2E NPC Vibes | Skipping 'none' vibe notification (only significant vibes enabled)`);
+      return;
+    }
+
+    // If not filtering and we have a 'none' result, we could show it, but for now skip it
+    // This gives us the option to show 'none' results in the future if desired
+    if (vibeType === 'none') {
+      console.log(`🎭 PF2E NPC Vibes | Skipping 'none' vibe notification`);
+      return;
+    }
 
     // Determine recipients based on source type
     const recipients = this.getNotificationRecipients(sourceToken, sourceType);

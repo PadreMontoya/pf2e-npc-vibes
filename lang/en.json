@@ -10,6 +10,10 @@
         "Name": "Enable Vibe Notifications",
         "Hint": "Send whispered messages when significant vibes occur"
       },
+      "OnlySignificantVibes": {
+        "Name": "Only Significant Vibes",
+        "Hint": "Only show chat notifications for meaningful vibes (Curious, Repulsed, Awestruck). When disabled, shows all vibe results including 'none'."
+      },
       "AuraOpacity": {
         "Name": "Aura Opacity",
         "Hint": "Opacity level for vibe auras (0-100%)"

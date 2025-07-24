@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2025-07-24
+
+### Added
+- "Only Significant Vibes" notification setting to filter chat messages
+- Chat notifications now only show Curious, Repulsed, and Awestruck vibes by default
+- Setting to control whether to show all vibe results or only significant ones
+
+### Changed
+- Default notification behavior now filters out "none" vibe results
+- Cleaner chat experience with only meaningful vibe notifications
+
 ## [1.1.0] - 2025-07-24
 
 ### Changed

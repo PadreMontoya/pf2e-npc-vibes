@@ -67,6 +67,15 @@ function registerSettings() {
     default: true
   });
 
+  game.settings.register(MODULE_ID, 'onlySignificantVibes', {
+    name: game.i18n.localize('PF2E_NPC_VIBES.Settings.OnlySignificantVibes.Name'),
+    hint: game.i18n.localize('PF2E_NPC_VIBES.Settings.OnlySignificantVibes.Hint'),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
   game.settings.register(MODULE_ID, 'auraOpacity', {
     name: game.i18n.localize('PF2E_NPC_VIBES.Settings.AuraOpacity.Name'),
     hint: game.i18n.localize('PF2E_NPC_VIBES.Settings.AuraOpacity.Hint'),
