@@ -332,4 +332,36 @@ export class DataManager {
       ui.notifications.error('Failed to import vibe data: ' + error.message);
     }
   }
+
+  /**
+   * Reset all vibe data (GM only)
+   * @returns {Promise<void>}
+   */
+  async resetAllData() {
+    if (!game.user.isGM) {
+      throw new Error('Only GMs can reset vibe data');
+    }
+
+    console.log('🎭 PF2E NPC Vibes | Resetting all vibe data...');
+
+    // Create empty data structure
+    const emptyData = {
+      pcVibes: {},
+      npcVibes: {},
+      connections: {},
+      metadata: {
+        version: '1.0.9',
+        lastUpdated: Date.now(),
+        totalVibes: 0
+      }
+    };
+
+    // Save the empty data
+    await game.settings.set(this.moduleId, 'vibeData', emptyData);
+
+    // Clear the cache
+    this.dataCache = null;
+
+    console.log('🎭 PF2E NPC Vibes | All vibe data has been reset');
+  }
 }

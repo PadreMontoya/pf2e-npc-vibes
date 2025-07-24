@@ -45,19 +45,15 @@ export class MessagingSystem {
    */
   getNotificationRecipients(sourceToken, sourceType) {
     const recipients = [];
-    
-    // Always include GM
+
+    // Only send vibe notifications to GM for better immersion
     const gmUsers = game.users.filter(user => user.isGM && user.active);
     recipients.push(...gmUsers.map(user => user.id));
-    
-    if (sourceType === 'pc') {
-      // For PC vibes, also include the player who owns the character
-      const owners = this.getTokenOwners(sourceToken);
-      recipients.push(...owners);
-    }
-    
-    // Remove duplicates
-    return [...new Set(recipients)];
+
+    // Note: Removed player notifications to keep vibes GM-only
+    // Players can see their vibes in the Vibe Book interface
+
+    return recipients;
   }
 
   /**

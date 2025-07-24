@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.9] - 2025-07-24
+
+### Added
+- "Reset All Vibes" button in GM Debug tab to clear all vibe data
+- GM-only vibe notifications (players no longer see vibe roll messages)
+
+### Fixed
+- Fixed Vibe Book data display issue where vibes weren't showing in the interface
+- Fixed vibe data retrieval and filtering logic
+- Improved data synchronization between vibe generation and display
+
+### Changed
+- Vibe roll notifications are now GM-only for better immersion
+- Enhanced debug logging for vibe data troubleshooting
+
 ## [1.0.8] - 2025-07-22
 
 ### Added

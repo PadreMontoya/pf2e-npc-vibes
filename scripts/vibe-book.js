@@ -82,20 +82,21 @@ export class VibeBookApplication extends Application {
 
         const connection = dataManager.getConnection(pcUuid, npcUuid);
 
-        vibeData.pcVibes.push({
-          sourceName: pcActor.name,
-          sourceUuid: pcUuid,
-          targetName: npcActor.name,
-          targetUuid: npcUuid,
-          vibe: vibeInfo.vibe,
-          vibeDisplay: this.getVibeDisplayName(vibeInfo.vibe),
-          vibeColor: this.getVibeColor(vibeInfo.vibe),
-          connection,
-          timestamp: vibeInfo.timestamp,
-          hasVibe: vibeInfo.vibe !== 'none'
-        });
+        // Only add vibes that are not 'none' to the display
+        if (vibeInfo.vibe && vibeInfo.vibe !== 'none') {
+          vibeData.pcVibes.push({
+            sourceName: pcActor.name,
+            sourceUuid: pcUuid,
+            targetName: npcActor.name,
+            targetUuid: npcUuid,
+            vibe: vibeInfo.vibe,
+            vibeDisplay: this.getVibeDisplayName(vibeInfo.vibe),
+            vibeColor: this.getVibeColor(vibeInfo.vibe),
+            connection,
+            timestamp: vibeInfo.timestamp,
+            hasVibe: true
+          });
 
-        if (vibeInfo.vibe !== 'none') {
           vibeData.hasVibes = true;
         }
       }
@@ -117,19 +118,20 @@ export class VibeBookApplication extends Application {
           continue;
         }
 
-        vibeData.npcVibes.push({
-          sourceName: npcActor.name,
-          sourceUuid: npcUuid,
-          targetName: pcActor.name,
-          targetUuid: pcUuid,
-          vibe: vibeInfo.vibe,
-          vibeDisplay: this.getVibeDisplayName(vibeInfo.vibe),
-          vibeColor: this.getVibeColor(vibeInfo.vibe),
-          timestamp: vibeInfo.timestamp,
-          hasVibe: vibeInfo.vibe !== 'none'
-        });
+        // Only add vibes that are not 'none' to the display
+        if (vibeInfo.vibe && vibeInfo.vibe !== 'none') {
+          vibeData.npcVibes.push({
+            sourceName: npcActor.name,
+            sourceUuid: npcUuid,
+            targetName: pcActor.name,
+            targetUuid: pcUuid,
+            vibe: vibeInfo.vibe,
+            vibeDisplay: this.getVibeDisplayName(vibeInfo.vibe),
+            vibeColor: this.getVibeColor(vibeInfo.vibe),
+            timestamp: vibeInfo.timestamp,
+            hasVibe: true
+          });
 
-        if (vibeInfo.vibe !== 'none') {
           vibeData.hasVibes = true;
         }
       }
@@ -172,20 +174,21 @@ export class VibeBookApplication extends Application {
 
       const connection = dataManager.getConnection(pcUuid, npcUuid);
 
-      vibeData.pcVibes.push({
-        sourceName: character.name,
-        sourceUuid: pcUuid,
-        targetName: npcActor.name,
-        targetUuid: npcUuid,
-        vibe: vibeInfo.vibe,
-        vibeDisplay: this.getVibeDisplayName(vibeInfo.vibe),
-        vibeColor: this.getVibeColor(vibeInfo.vibe),
-        connection,
-        timestamp: vibeInfo.timestamp,
-        hasVibe: vibeInfo.vibe !== 'none'
-      });
+      // Only add vibes that are not 'none' to the display
+      if (vibeInfo.vibe && vibeInfo.vibe !== 'none') {
+        vibeData.pcVibes.push({
+          sourceName: character.name,
+          sourceUuid: pcUuid,
+          targetName: npcActor.name,
+          targetUuid: npcUuid,
+          vibe: vibeInfo.vibe,
+          vibeDisplay: this.getVibeDisplayName(vibeInfo.vibe),
+          vibeColor: this.getVibeColor(vibeInfo.vibe),
+          connection,
+          timestamp: vibeInfo.timestamp,
+          hasVibe: true
+        });
 
-      if (vibeInfo.vibe !== 'none') {
         vibeData.hasVibes = true;
       }
     }
@@ -279,6 +282,7 @@ export class VibeBookApplication extends Application {
     // Handle debug buttons (GM only)
     html.find('.clear-debug').click(this._onClearDebug.bind(this));
     html.find('.force-sight-check').click(this._onForceSightCheck.bind(this));
+    html.find('.reset-all-vibes').click(this._onResetAllVibes.bind(this));
 
     // Handle tab navigation
     html.find('.tab-button').click(this._onTabClick.bind(this));
@@ -423,6 +427,46 @@ export class VibeBookApplication extends Application {
       await vibeManager.refreshAllLineOfSight();
       this.render(true);
       ui.notifications.info('Forced sight check completed - check console for details');
+    }
+  }
+
+  /**
+   * Handle reset all vibes button click
+   * @param {Event} event - The click event
+   */
+  async _onResetAllVibes(event) {
+    if (!game.user.isGM) return;
+
+    // Show confirmation dialog
+    const confirmed = await Dialog.confirm({
+      title: "Reset All Vibes",
+      content: "<p>Are you sure you want to reset ALL vibe data? This action cannot be undone.</p><p><strong>This will clear:</strong></p><ul><li>All PC vibes towards NPCs</li><li>All NPC vibes towards PCs</li><li>All connection levels</li><li>All debug data</li></ul>",
+      yes: () => true,
+      no: () => false,
+      defaultYes: false
+    });
+
+    if (!confirmed) return;
+
+    try {
+      const dataManager = game.modules.get(this.moduleId)?.dataManager;
+      if (dataManager) {
+        // Reset all vibe data
+        await dataManager.resetAllData();
+
+        // Clear debug data
+        const debugManager = game.modules.get(this.moduleId)?.debugManager;
+        if (debugManager) {
+          debugManager.clearDebugData();
+        }
+
+        console.log('🎭 PF2E NPC Vibes | All vibe data reset by GM');
+        this.render(true);
+        ui.notifications.info('All vibe data has been reset');
+      }
+    } catch (error) {
+      console.error('🎭 PF2E NPC Vibes | Error resetting vibe data:', error);
+      ui.notifications.error('Failed to reset vibe data - check console for details');
     }
   }
 

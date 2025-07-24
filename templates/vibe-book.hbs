@@ -42,25 +42,23 @@
                   <div class="col-connection">Connection</div>
                 </div>
                 {{#each vibeData.pcVibes}}
-                  {{#if hasVibe}}
-                    <div class="vibe-table-row">
-                      <div class="col-source">{{sourceName}}</div>
-                      <div class="col-target">{{targetName}}</div>
-                      <div class="col-vibe">
-                        <div class="vibe-indicator {{vibe}}" style="background-color: {{vibeColor}}" title="{{vibeDisplay}}"></div>
-                        <span class="vibe-text">{{vibeDisplay}}</span>
-                      </div>
-                      <div class="col-connection">
-                        <select class="connection-select" data-pc-uuid="{{sourceUuid}}" data-npc-uuid="{{targetUuid}}">
-                          {{#each ../connectionLevels}}
-                            <option value="{{value}}" {{#if (eq value ../connection)}}selected{{/if}}>
-                              {{label}}
-                            </option>
-                          {{/each}}
-                        </select>
-                      </div>
+                  <div class="vibe-table-row">
+                    <div class="col-source">{{sourceName}}</div>
+                    <div class="col-target">{{targetName}}</div>
+                    <div class="col-vibe">
+                      <div class="vibe-indicator {{vibe}}" style="background-color: {{vibeColor}}" title="{{vibeDisplay}}"></div>
+                      <span class="vibe-text">{{vibeDisplay}}</span>
                     </div>
-                  {{/if}}
+                    <div class="col-connection">
+                      <select class="connection-select" data-pc-uuid="{{sourceUuid}}" data-npc-uuid="{{targetUuid}}">
+                        {{#each ../connectionLevels}}
+                          <option value="{{value}}" {{#if (eq value ../connection)}}selected{{/if}}>
+                            {{label}}
+                          </option>
+                        {{/each}}
+                      </select>
+                    </div>
+                  </div>
                 {{/each}}
               </div>
             </div>
@@ -78,17 +76,15 @@
                   <div class="col-info">Info</div>
                 </div>
                 {{#each vibeData.npcVibes}}
-                  {{#if hasVibe}}
-                    <div class="vibe-table-row">
-                      <div class="col-source">{{sourceName}}</div>
-                      <div class="col-target">{{targetName}}</div>
-                      <div class="col-vibe">
-                        <div class="vibe-indicator {{vibe}}" style="background-color: {{vibeColor}}" title="{{vibeDisplay}}"></div>
-                        <span class="vibe-text">{{vibeDisplay}}</span>
-                      </div>
-                      <div class="col-info">NPC Vibe</div>
+                  <div class="vibe-table-row">
+                    <div class="col-source">{{sourceName}}</div>
+                    <div class="col-target">{{targetName}}</div>
+                    <div class="col-vibe">
+                      <div class="vibe-indicator {{vibe}}" style="background-color: {{vibeColor}}" title="{{vibeDisplay}}"></div>
+                      <span class="vibe-text">{{vibeDisplay}}</span>
                     </div>
-                  {{/if}}
+                    <div class="col-info">NPC Vibe</div>
+                  </div>
                 {{/each}}
               </div>
             </div>
@@ -110,6 +106,9 @@
               </button>
               <button type="button" class="clear-debug">
                 <i class="fas fa-trash"></i> Clear Debug Data
+              </button>
+              <button type="button" class="reset-all-vibes" style="background: #dc3545; border-color: #dc3545;">
+                <i class="fas fa-bomb"></i> Reset All Vibes
               </button>
             </div>
 
@@ -195,25 +194,23 @@
                 <div class="col-connection">Connection</div>
               </div>
               {{#each vibeData.pcVibes}}
-                {{#if hasVibe}}
-                  <div class="vibe-table-row">
-                    <div class="col-source">{{sourceName}}</div>
-                    <div class="col-target">{{targetName}}</div>
-                    <div class="col-vibe">
-                      <div class="vibe-indicator {{vibe}}" style="background-color: {{vibeColor}}" title="{{vibeDisplay}}"></div>
-                      <span class="vibe-text">{{vibeDisplay}}</span>
-                    </div>
-                    <div class="col-connection">
-                      <select class="connection-select" data-pc-uuid="{{sourceUuid}}" data-npc-uuid="{{targetUuid}}">
-                        {{#each ../connectionLevels}}
-                          <option value="{{value}}" {{#if (eq value ../connection)}}selected{{/if}}>
-                            {{label}}
-                          </option>
-                        {{/each}}
-                      </select>
-                    </div>
+                <div class="vibe-table-row">
+                  <div class="col-source">{{sourceName}}</div>
+                  <div class="col-target">{{targetName}}</div>
+                  <div class="col-vibe">
+                    <div class="vibe-indicator {{vibe}}" style="background-color: {{vibeColor}}" title="{{vibeDisplay}}"></div>
+                    <span class="vibe-text">{{vibeDisplay}}</span>
                   </div>
-                {{/if}}
+                  <div class="col-connection">
+                    <select class="connection-select" data-pc-uuid="{{sourceUuid}}" data-npc-uuid="{{targetUuid}}">
+                      {{#each ../connectionLevels}}
+                        <option value="{{value}}" {{#if (eq value ../connection)}}selected{{/if}}>
+                          {{label}}
+                        </option>
+                      {{/each}}
+                    </select>
+                  </div>
+                </div>
               {{/each}}
             </div>
           </div>
@@ -399,6 +396,10 @@
 
 .debug-controls button:hover {
   background: #0056b3;
+}
+
+.debug-controls button.reset-all-vibes:hover {
+  background: #c82333 !important;
 }
 
 .stats-grid {
