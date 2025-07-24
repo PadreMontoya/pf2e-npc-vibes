@@ -101,7 +101,13 @@ export class VibeBookApplication extends Application {
       console.log(`🎭 PF2E NPC Vibes | Processing PC UUID: ${pcUuid}`);
       console.log(`🎭 PF2E NPC Vibes | NPC vibes for this PC:`, npcVibes);
 
-      const pcActor = game.actors.find(a => a.uuid === pcUuid);
+      // Handle both actor-only UUIDs and token-based UUIDs for PCs
+      let pcActor = game.actors.find(a => a.uuid === pcUuid);
+      if (!pcActor && pcUuid.includes('.Actor.')) {
+        // Extract actor UUID from token-based UUID
+        const actorUuid = pcUuid.split('.Actor.')[1];
+        pcActor = game.actors.find(a => a.id === actorUuid);
+      }
       console.log(`🎭 PF2E NPC Vibes | PC Actor found:`, !!pcActor, pcActor?.name);
 
       if (!pcActor) {
@@ -114,8 +120,13 @@ export class VibeBookApplication extends Application {
         console.log(`🎭 PF2E NPC Vibes | Processing NPC UUID: ${npcUuid}`);
         console.log(`🎭 PF2E NPC Vibes | Vibe info:`, vibeInfo);
 
-        // Include ALL vibes, even 'none' for debugging
-        const npcActor = game.actors.find(a => a.uuid === npcUuid);
+        // Handle both actor-only UUIDs and token-based UUIDs for NPCs
+        let npcActor = game.actors.find(a => a.uuid === npcUuid);
+        if (!npcActor && npcUuid.includes('.Actor.')) {
+          // Extract actor UUID from token-based UUID
+          const actorUuid = npcUuid.split('.Actor.')[1];
+          npcActor = game.actors.find(a => a.id === actorUuid);
+        }
         console.log(`🎭 PF2E NPC Vibes | NPC Actor found:`, !!npcActor, npcActor?.name);
 
         if (!npcActor) {
@@ -154,15 +165,28 @@ export class VibeBookApplication extends Application {
 
     // Process NPC vibes towards PCs
     for (const [npcUuid, pcVibes] of Object.entries(allVibes.npcVibes || {})) {
-      const npcActor = game.actors.find(a => a.uuid === npcUuid);
+      // Handle both actor-only UUIDs and token-based UUIDs for NPCs
+      let npcActor = game.actors.find(a => a.uuid === npcUuid);
+      if (!npcActor && npcUuid.includes('.Actor.')) {
+        // Extract actor UUID from token-based UUID
+        const actorUuid = npcUuid.split('.Actor.')[1];
+        npcActor = game.actors.find(a => a.id === actorUuid);
+      }
+
       if (!npcActor) {
         console.warn(`🎭 PF2E NPC Vibes | NPC actor not found for UUID: ${npcUuid}`);
         continue;
       }
 
       for (const [pcUuid, vibeInfo] of Object.entries(pcVibes || {})) {
-        // Include ALL vibes, even 'none' for debugging
-        const pcActor = game.actors.find(a => a.uuid === pcUuid);
+        // Handle both actor-only UUIDs and token-based UUIDs for PCs
+        let pcActor = game.actors.find(a => a.uuid === pcUuid);
+        if (!pcActor && pcUuid.includes('.Actor.')) {
+          // Extract actor UUID from token-based UUID
+          const actorUuid = pcUuid.split('.Actor.')[1];
+          pcActor = game.actors.find(a => a.id === actorUuid);
+        }
+
         if (!pcActor) {
           console.warn(`🎭 PF2E NPC Vibes | PC actor not found for UUID: ${pcUuid}`);
           continue;
@@ -221,8 +245,14 @@ export class VibeBookApplication extends Application {
     console.log('🎭 PF2E NPC Vibes | Player vibe data for', character.name, ':', pcVibes);
 
     for (const [npcUuid, vibeInfo] of Object.entries(pcVibes || {})) {
-      // Include ALL vibes for debugging, but mark which have actual vibes
-      const npcActor = game.actors.find(a => a.uuid === npcUuid);
+      // Handle both actor-only UUIDs and token-based UUIDs for NPCs
+      let npcActor = game.actors.find(a => a.uuid === npcUuid);
+      if (!npcActor && npcUuid.includes('.Actor.')) {
+        // Extract actor UUID from token-based UUID
+        const actorUuid = npcUuid.split('.Actor.')[1];
+        npcActor = game.actors.find(a => a.id === actorUuid);
+      }
+
       if (!npcActor) {
         console.warn(`🎭 PF2E NPC Vibes | NPC actor not found for UUID: ${npcUuid}`);
         continue;

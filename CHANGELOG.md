@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2025-07-24
+
+### Fixed
+- **CRITICAL FIX**: Fixed Vibe Book display issue caused by UUID mismatch
+- Fixed actor lookup to handle token-based UUIDs vs actor-only UUIDs
+- Vibes are now properly displayed in the Vibe Book interface
+- Fixed disconnect between vibe storage and display systems
+
+### Technical
+- Updated actor lookup logic to extract actor UUID from token-based UUIDs
+- Enhanced UUID handling for both PC and NPC actor resolution
+- Fixed the core issue preventing vibes from appearing in the interface
+
 ## [1.1.2] - 2025-07-24
 
 ### Fixed
