@@ -62,59 +62,80 @@ export class VibeBookApplication extends Application {
       hasVibes: false
     };
 
+    console.log('🎭 PF2E NPC Vibes | GM Vibe Data - All vibes:', allVibes);
+
     // Process PC vibes towards NPCs
-    for (const [pcUuid, npcVibes] of Object.entries(allVibes.pcVibes)) {
+    for (const [pcUuid, npcVibes] of Object.entries(allVibes.pcVibes || {})) {
       const pcActor = game.actors.find(a => a.uuid === pcUuid);
-      if (!pcActor) continue;
+      if (!pcActor) {
+        console.warn(`🎭 PF2E NPC Vibes | PC actor not found for UUID: ${pcUuid}`);
+        continue;
+      }
 
-      for (const [npcUuid, vibeInfo] of Object.entries(npcVibes)) {
-        if (vibeInfo.vibe === 'none') continue;
-
+      for (const [npcUuid, vibeInfo] of Object.entries(npcVibes || {})) {
+        // Include ALL vibes, even 'none' for debugging
         const npcActor = game.actors.find(a => a.uuid === npcUuid);
-        if (!npcActor) continue;
+        if (!npcActor) {
+          console.warn(`🎭 PF2E NPC Vibes | NPC actor not found for UUID: ${npcUuid}`);
+          continue;
+        }
 
         const connection = dataManager.getConnection(pcUuid, npcUuid);
 
         vibeData.pcVibes.push({
-          pcName: pcActor.name,
-          pcUuid,
-          npcName: npcActor.name,
-          npcUuid,
+          sourceName: pcActor.name,
+          sourceUuid: pcUuid,
+          targetName: npcActor.name,
+          targetUuid: npcUuid,
           vibe: vibeInfo.vibe,
           vibeDisplay: this.getVibeDisplayName(vibeInfo.vibe),
           vibeColor: this.getVibeColor(vibeInfo.vibe),
           connection,
-          timestamp: vibeInfo.timestamp
+          timestamp: vibeInfo.timestamp,
+          hasVibe: vibeInfo.vibe !== 'none'
         });
-        vibeData.hasVibes = true;
+
+        if (vibeInfo.vibe !== 'none') {
+          vibeData.hasVibes = true;
+        }
       }
     }
 
     // Process NPC vibes towards PCs
-    for (const [npcUuid, pcVibes] of Object.entries(allVibes.npcVibes)) {
+    for (const [npcUuid, pcVibes] of Object.entries(allVibes.npcVibes || {})) {
       const npcActor = game.actors.find(a => a.uuid === npcUuid);
-      if (!npcActor) continue;
+      if (!npcActor) {
+        console.warn(`🎭 PF2E NPC Vibes | NPC actor not found for UUID: ${npcUuid}`);
+        continue;
+      }
 
-      for (const [pcUuid, vibeInfo] of Object.entries(pcVibes)) {
-        if (vibeInfo.vibe === 'none') continue;
-
+      for (const [pcUuid, vibeInfo] of Object.entries(pcVibes || {})) {
+        // Include ALL vibes, even 'none' for debugging
         const pcActor = game.actors.find(a => a.uuid === pcUuid);
-        if (!pcActor) continue;
+        if (!pcActor) {
+          console.warn(`🎭 PF2E NPC Vibes | PC actor not found for UUID: ${pcUuid}`);
+          continue;
+        }
 
         vibeData.npcVibes.push({
-          npcName: npcActor.name,
-          npcUuid,
-          pcName: pcActor.name,
-          pcUuid,
+          sourceName: npcActor.name,
+          sourceUuid: npcUuid,
+          targetName: pcActor.name,
+          targetUuid: pcUuid,
           vibe: vibeInfo.vibe,
           vibeDisplay: this.getVibeDisplayName(vibeInfo.vibe),
           vibeColor: this.getVibeColor(vibeInfo.vibe),
-          timestamp: vibeInfo.timestamp
+          timestamp: vibeInfo.timestamp,
+          hasVibe: vibeInfo.vibe !== 'none'
         });
-        vibeData.hasVibes = true;
+
+        if (vibeInfo.vibe !== 'none') {
+          vibeData.hasVibes = true;
+        }
       }
     }
 
+    console.log('🎭 PF2E NPC Vibes | Processed GM vibe data:', vibeData);
     return vibeData;
   }
 
@@ -139,26 +160,37 @@ export class VibeBookApplication extends Application {
     const pcUuid = character.uuid;
     const pcVibes = dataManager.getPCVibes(pcUuid);
 
-    for (const [npcUuid, vibeInfo] of Object.entries(pcVibes)) {
-      if (vibeInfo.vibe === 'none') continue;
+    console.log('🎭 PF2E NPC Vibes | Player vibe data for', character.name, ':', pcVibes);
 
+    for (const [npcUuid, vibeInfo] of Object.entries(pcVibes || {})) {
+      // Include ALL vibes for debugging, but mark which have actual vibes
       const npcActor = game.actors.find(a => a.uuid === npcUuid);
-      if (!npcActor) continue;
+      if (!npcActor) {
+        console.warn(`🎭 PF2E NPC Vibes | NPC actor not found for UUID: ${npcUuid}`);
+        continue;
+      }
 
       const connection = dataManager.getConnection(pcUuid, npcUuid);
 
       vibeData.pcVibes.push({
-        npcName: npcActor.name,
-        npcUuid,
+        sourceName: character.name,
+        sourceUuid: pcUuid,
+        targetName: npcActor.name,
+        targetUuid: npcUuid,
         vibe: vibeInfo.vibe,
         vibeDisplay: this.getVibeDisplayName(vibeInfo.vibe),
         vibeColor: this.getVibeColor(vibeInfo.vibe),
         connection,
-        timestamp: vibeInfo.timestamp
+        timestamp: vibeInfo.timestamp,
+        hasVibe: vibeInfo.vibe !== 'none'
       });
-      vibeData.hasVibes = true;
+
+      if (vibeInfo.vibe !== 'none') {
+        vibeData.hasVibes = true;
+      }
     }
 
+    console.log('🎭 PF2E NPC Vibes | Processed player vibe data:', vibeData);
     return vibeData;
   }
 

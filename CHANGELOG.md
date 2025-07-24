@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.8] - 2025-07-22
+
+### Added
+- Improved Vibe Book interface with three-column layout
+- GM view now shows all PC→NPC and NPC→PC vibes in organized tables
+- Player view shows clean three-column display of their character's vibes
+- Better data organization and display in Vibe Book
+
+### Fixed
+- Fixed Vibe Book not displaying vibe data properly for GMs
+- Fixed missing vibe entries in the Vibes tab
+- Improved data retrieval and display logic
+
+### Changed
+- Redesigned Vibe Book layout for better readability
+- Separate tables for PC vibes and NPC vibes in GM view
+- Cleaner three-column format: Source → Target → Vibe
+
 ## [1.0.7] - 2025-07-22
 
 ### Fixed

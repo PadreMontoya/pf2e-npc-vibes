@@ -33,24 +33,34 @@
           <!-- PC Vibes Section -->
           {{#if vibeData.pcVibes}}
             <div class="vibe-section">
-              <h3>{{localize "PF2E_NPC_VIBES.VibeBook.PCVibes"}}</h3>
-              <div class="vibe-list">
+              <h3>PC → NPC Vibes</h3>
+              <div class="vibe-table">
+                <div class="vibe-table-header">
+                  <div class="col-source">Source (PC)</div>
+                  <div class="col-target">Target (NPC)</div>
+                  <div class="col-vibe">Vibe</div>
+                  <div class="col-connection">Connection</div>
+                </div>
                 {{#each vibeData.pcVibes}}
-                  <div class="vibe-entry">
-                    <div class="vibe-character-name">{{pcName}}</div>
-                    <div class="vibe-direction">{{localize "PF2E_NPC_VIBES.VibeBook.Towards"}}</div>
-                    <div class="vibe-target-name">{{npcName}}</div>
-                    <div class="vibe-indicator {{vibe}}" style="background-color: {{vibeColor}}" title="{{vibeDisplay}}"></div>
-                    <div class="vibe-connection">
-                      <select class="connection-select" data-pc-uuid="{{pcUuid}}" data-npc-uuid="{{npcUuid}}">
-                        {{#each ../connectionLevels}}
-                          <option value="{{value}}" {{#if (eq value ../connection)}}selected{{/if}}>
-                            {{label}}
-                          </option>
-                        {{/each}}
-                      </select>
+                  {{#if hasVibe}}
+                    <div class="vibe-table-row">
+                      <div class="col-source">{{sourceName}}</div>
+                      <div class="col-target">{{targetName}}</div>
+                      <div class="col-vibe">
+                        <div class="vibe-indicator {{vibe}}" style="background-color: {{vibeColor}}" title="{{vibeDisplay}}"></div>
+                        <span class="vibe-text">{{vibeDisplay}}</span>
+                      </div>
+                      <div class="col-connection">
+                        <select class="connection-select" data-pc-uuid="{{sourceUuid}}" data-npc-uuid="{{targetUuid}}">
+                          {{#each ../connectionLevels}}
+                            <option value="{{value}}" {{#if (eq value ../connection)}}selected{{/if}}>
+                              {{label}}
+                            </option>
+                          {{/each}}
+                        </select>
+                      </div>
                     </div>
-                  </div>
+                  {{/if}}
                 {{/each}}
               </div>
             </div>
@@ -59,16 +69,26 @@
           <!-- NPC Vibes Section -->
           {{#if vibeData.npcVibes}}
             <div class="vibe-section">
-              <h3>{{localize "PF2E_NPC_VIBES.VibeBook.NPCVibes"}}</h3>
-              <div class="vibe-list">
+              <h3>NPC → PC Vibes</h3>
+              <div class="vibe-table">
+                <div class="vibe-table-header">
+                  <div class="col-source">Source (NPC)</div>
+                  <div class="col-target">Target (PC)</div>
+                  <div class="col-vibe">Vibe</div>
+                  <div class="col-info">Info</div>
+                </div>
                 {{#each vibeData.npcVibes}}
-                  <div class="vibe-entry">
-                    <div class="vibe-character-name">{{npcName}}</div>
-                    <div class="vibe-direction">{{localize "PF2E_NPC_VIBES.VibeBook.Towards"}}</div>
-                    <div class="vibe-target-name">{{pcName}}</div>
-                    <div class="vibe-indicator {{vibe}}" style="background-color: {{vibeColor}}" title="{{vibeDisplay}}"></div>
-                    <div class="vibe-info">NPC Vibe</div>
-                  </div>
+                  {{#if hasVibe}}
+                    <div class="vibe-table-row">
+                      <div class="col-source">{{sourceName}}</div>
+                      <div class="col-target">{{targetName}}</div>
+                      <div class="col-vibe">
+                        <div class="vibe-indicator {{vibe}}" style="background-color: {{vibeColor}}" title="{{vibeDisplay}}"></div>
+                        <span class="vibe-text">{{vibeDisplay}}</span>
+                      </div>
+                      <div class="col-info">NPC Vibe</div>
+                    </div>
+                  {{/if}}
                 {{/each}}
               </div>
             </div>
@@ -166,23 +186,34 @@
           </div>
         {{else if vibeData.hasVibes}}
           <div class="vibe-section">
-            <h3>{{localize "PF2E_NPC_VIBES.VibeBook.PlayerView"}}</h3>
-            <div class="vibe-list">
+            <h3>Your Character's Vibes</h3>
+            <div class="vibe-table">
+              <div class="vibe-table-header">
+                <div class="col-source">Your Character</div>
+                <div class="col-target">Target</div>
+                <div class="col-vibe">Vibe</div>
+                <div class="col-connection">Connection</div>
+              </div>
               {{#each vibeData.pcVibes}}
-                <div class="vibe-entry">
-                  <div class="vibe-character-name">{{npcName}}</div>
-                  <div class="vibe-indicator {{vibe}}" style="background-color: {{vibeColor}}" title="{{vibeDisplay}}"></div>
-                  <div class="vibe-display-name">{{vibeDisplay}}</div>
-                  <div class="vibe-connection">
-                    <select class="connection-select" data-pc-uuid="{{../character.uuid}}" data-npc-uuid="{{npcUuid}}">
-                      {{#each ../connectionLevels}}
-                        <option value="{{value}}" {{#if (eq value ../connection)}}selected{{/if}}>
-                          {{label}}
-                        </option>
-                      {{/each}}
-                    </select>
+                {{#if hasVibe}}
+                  <div class="vibe-table-row">
+                    <div class="col-source">{{sourceName}}</div>
+                    <div class="col-target">{{targetName}}</div>
+                    <div class="col-vibe">
+                      <div class="vibe-indicator {{vibe}}" style="background-color: {{vibeColor}}" title="{{vibeDisplay}}"></div>
+                      <span class="vibe-text">{{vibeDisplay}}</span>
+                    </div>
+                    <div class="col-connection">
+                      <select class="connection-select" data-pc-uuid="{{sourceUuid}}" data-npc-uuid="{{targetUuid}}">
+                        {{#each ../connectionLevels}}
+                          <option value="{{value}}" {{#if (eq value ../connection)}}selected{{/if}}>
+                            {{label}}
+                          </option>
+                        {{/each}}
+                      </select>
+                    </div>
                   </div>
-                </div>
+                {{/if}}
               {{/each}}
             </div>
           </div>
@@ -224,40 +255,60 @@
   background: #e9ecef;
 }
 
-.vibe-entry {
-  display: grid;
-  grid-template-columns: 2fr auto 2fr auto 1fr;
-  gap: 10px;
-  align-items: center;
-  padding: 8px;
+/* Vibe Table Layout */
+.vibe-table {
+  border: 1px solid #ccc;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  margin-bottom: 5px;
+  overflow: hidden;
+  margin-bottom: 20px;
 }
 
-.player-view .vibe-entry {
-  grid-template-columns: 2fr auto auto 1fr;
-}
-
-.vibe-character-name,
-.vibe-target-name {
+.vibe-table-header {
+  display: grid;
+  grid-template-columns: 2fr 2fr 2fr 2fr;
+  background: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
   font-weight: bold;
+  padding: 10px 0;
 }
 
-.vibe-direction {
-  font-style: italic;
-  color: #666;
-  font-size: 12px;
+.vibe-table-row {
+  display: grid;
+  grid-template-columns: 2fr 2fr 2fr 2fr;
+  border-bottom: 1px solid #eee;
+  padding: 8px 0;
+  align-items: center;
+}
+
+.vibe-table-row:last-child {
+  border-bottom: none;
+}
+
+.vibe-table-row:hover {
+  background: rgba(0, 123, 255, 0.1);
+}
+
+.col-source, .col-target, .col-vibe, .col-connection, .col-info {
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+}
+
+.col-vibe {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .vibe-indicator {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   border: 2px solid #333;
+  flex-shrink: 0;
 }
 
-.vibe-display-name {
+.vibe-text {
   font-weight: bold;
   text-transform: capitalize;
 }
