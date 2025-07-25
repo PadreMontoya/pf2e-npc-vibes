@@ -373,9 +373,13 @@ export class DataManager {
     // Save the empty data
     await game.settings.set(this.moduleId, 'vibeData', emptyData);
 
-    // Clear the cache
+    // Clear the cache completely
     this.dataCache = null;
 
+    // Force a settings refresh
+    await game.settings.get(this.moduleId, 'vibeData');
+
     console.log('🎭 PF2E NPC Vibes | All vibe data has been reset');
+    console.log('🎭 PF2E NPC Vibes | Verifying reset - current data:', this.getVibeData());
   }
 }

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.6] - 2025-07-24
+
+### Fixed
+- Fixed vibe checks not triggering when tokens are first placed on canvas
+- Fixed "Reset All Vibes" not properly clearing the interface display
+- Enhanced token placement detection for immediate vibe generation
+
+### Changed
+- Changed "Force Sight Check" to "Force Vibe Check" for clarity
+- Improved vibe check triggering on token creation events
+- Enhanced data clearing mechanism for reset functionality
+
 ## [1.1.5] - 2025-07-24
 
 ### Fixed

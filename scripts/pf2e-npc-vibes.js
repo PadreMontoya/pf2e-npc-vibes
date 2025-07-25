@@ -42,10 +42,17 @@ export class PF2ENPCVibes {
    */
   async onTokenCreate(token, options, userId) {
     if (!this.shouldProcessToken(token)) return;
-    
+
     const vibeManager = game.modules.get(this.moduleId).vibeManager;
     if (vibeManager) {
+      // Register the token first
       await vibeManager.registerToken(token);
+
+      // Add a small delay to ensure token is fully placed, then force vibe check
+      setTimeout(async () => {
+        console.log(`🎭 PF2E NPC Vibes | Forcing vibe check for newly placed token: ${token.name}`);
+        await vibeManager.performSightCheck(token);
+      }, 100);
     }
   }
 

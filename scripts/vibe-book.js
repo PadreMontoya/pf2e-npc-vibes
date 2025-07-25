@@ -501,7 +501,7 @@ export class VibeBookApplication extends Application {
   }
 
   /**
-   * Handle force sight check button click
+   * Handle force vibe check button click
    * @param {Event} event - The click event
    */
   async _onForceSightCheck(event) {
@@ -509,10 +509,41 @@ export class VibeBookApplication extends Application {
 
     const vibeManager = game.modules.get(this.moduleId)?.vibeManager;
     if (vibeManager) {
-      console.log('🎭 PF2E NPC Vibes | Force sight check triggered by GM');
-      await vibeManager.refreshAllLineOfSight();
+      console.log('🎭 PF2E NPC Vibes | Force vibe check triggered by GM');
+
+      // Get all tokens on the current scene
+      const tokens = canvas.tokens.placeables;
+      const humanoidTokens = tokens.filter(token => {
+        const actorType = token.actor?.type;
+        return (actorType === 'character' || actorType === 'npc') &&
+               this.hasHumanoidTrait(token.actor);
+      });
+
+      console.log(`🎭 PF2E NPC Vibes | Found ${humanoidTokens.length} humanoid tokens for vibe checks`);
+
+      // Force vibe checks for all humanoid tokens
+      for (const token of humanoidTokens) {
+        console.log(`🎭 PF2E NPC Vibes | Forcing vibe check for: ${token.name}`);
+        await vibeManager.performSightCheck(token);
+      }
+
+      // Refresh the interface
       this.render(true);
-      ui.notifications.info('Forced sight check completed - check console for details');
+      ui.notifications.info(`Force vibe check completed for ${humanoidTokens.length} tokens - check console for details`);
+    }
+  }
+
+  /**
+   * Check if an actor has the humanoid trait (helper method)
+   * @param {Actor} actor - The actor to check
+   * @returns {boolean} - True if the actor has the humanoid trait
+   */
+  hasHumanoidTrait(actor) {
+    try {
+      const traits = actor.system?.traits?.value || [];
+      return traits.includes('humanoid') || actor.type === 'character';
+    } catch (error) {
+      return actor.type === 'character';
     }
   }
 
@@ -535,10 +566,17 @@ export class VibeBookApplication extends Application {
     if (!confirmed) return;
 
     try {
-      const dataManager = game.modules.get(this.moduleId)?.dataManager;
+      const vibeManager = game.modules.get(this.moduleId)?.vibeManager;
+      const dataManager = vibeManager?.dataManager;
+
       if (dataManager) {
+        console.log('🎭 PF2E NPC Vibes | Starting reset process...');
+
         // Reset all vibe data
         await dataManager.resetAllData();
+
+        // Force clear any additional caches
+        dataManager.dataCache = null;
 
         // Clear debug data
         const debugManager = game.modules.get(this.moduleId)?.debugManager;
@@ -548,12 +586,15 @@ export class VibeBookApplication extends Application {
 
         console.log('🎭 PF2E NPC Vibes | All vibe data reset by GM');
 
+        // Wait a moment for settings to propagate
+        await new Promise(resolve => setTimeout(resolve, 100));
+
         // Force a complete re-render with fresh data
         await this.render(true);
 
         // Also refresh any other open Vibe Books
         Object.values(ui.windows).forEach(window => {
-          if (window instanceof this.constructor) {
+          if (window instanceof this.constructor && window !== this) {
             window.render(true);
           }
         });
