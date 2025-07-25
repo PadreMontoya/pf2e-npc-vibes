@@ -29,11 +29,6 @@
         </div>
 
         <div class="tab-content vibes-tab active">
-          <!-- Debug Info -->
-          <div style="background: #f0f0f0; padding: 10px; margin-bottom: 10px; font-size: 12px; border-radius: 4px;">
-            <strong>Debug:</strong> hasVibes={{vibeData.hasVibes}}, pcVibes={{vibeData.pcVibes.length}}, npcVibes={{vibeData.npcVibes.length}}
-          </div>
-
         {{#if (or vibeData.hasVibes vibeData.pcVibes vibeData.npcVibes)}}
           <!-- PC Vibes Section -->
           {{#if vibeData.pcVibes}}

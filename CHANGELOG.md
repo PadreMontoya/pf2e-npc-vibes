@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.4] - 2025-07-24
+
+### Added
+- Humanoid trait requirement: Only actors with the "humanoid" trait are considered for vibe checks
+- Optimized vibe scanning: Only triggers on token placement and visibility changes (not movement)
+
+### Changed
+- Improved performance by reducing unnecessary vibe checks during token movement
+- Removed "First Sight" messages from chat notifications for cleaner experience
+- Removed debug panel from Vibes tab for cleaner interface
+
+### Performance
+- Vibe checks now only occur on token placement and visibility toggles
+- Manual scanning available via GM Debug tab when needed
+- Reduced computational overhead during gameplay
+
 ## [1.1.3] - 2025-07-24
 
 ### Fixed

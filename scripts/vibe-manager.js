@@ -81,6 +81,10 @@ export class VibeManager {
       const stableId = this.dataManager.getNPCStableId(token);
       console.log(`🎭 PF2E NPC Vibes | NPC ${token.name} stable ID: ${stableId}`);
     }
+
+    // Trigger sight check for newly placed token
+    console.log(`🎭 PF2E NPC Vibes | Triggering sight check for newly placed token: ${token.name}`);
+    await this.performSightCheck(token);
   }
 
   /**
@@ -204,10 +208,7 @@ export class VibeManager {
     }
 
     // First sight - roll for vibes
-    console.log(`🎭 PF2E NPC Vibes | 🎲 FIRST SIGHT! Rolling vibes between ${pcToken.name} and ${npcToken.name}`);
-
-    // Send first sight notification
-    await this.messagingSystem.sendFirstSightNotification(pcToken, npcToken);
+    console.log(`🎭 PF2E NPC Vibes | 🎲 Rolling vibes between ${pcToken.name} and ${npcToken.name}`);
 
     // Roll vibes
     const vibeResults = await this.vibeRoller.rollVibes(pcToken, npcToken);
@@ -257,7 +258,7 @@ export class VibeManager {
 
       // Send notification if significant
       if (vibeResults.pcToNpc.hasVibe) {
-        await this.messagingSystem.sendVibeNotification(vibeResults.pcToNpc, true);
+        await this.messagingSystem.sendVibeNotification(vibeResults.pcToNpc);
       }
     }
 
@@ -267,7 +268,7 @@ export class VibeManager {
 
       // Send notification if significant
       if (vibeResults.npcToPc.hasVibe) {
-        await this.messagingSystem.sendVibeNotification(vibeResults.npcToPc, true);
+        await this.messagingSystem.sendVibeNotification(vibeResults.npcToPc);
       }
     }
 

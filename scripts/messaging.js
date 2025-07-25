@@ -13,9 +13,8 @@ export class MessagingSystem {
   /**
    * Send a vibe notification message
    * @param {Object} vibeResult - The vibe roll result
-   * @param {boolean} isFirstSight - Whether this is the first sight between characters
    */
-  async sendVibeNotification(vibeResult, isFirstSight = false) {
+  async sendVibeNotification(vibeResult) {
     if (!game.settings.get(this.moduleId, 'enableNotifications')) {
       return;
     }
@@ -43,7 +42,7 @@ export class MessagingSystem {
     if (recipients.length === 0) return;
 
     // Create the message content
-    const messageContent = this.createVibeMessageContent(vibeResult, isFirstSight);
+    const messageContent = this.createVibeMessageContent(vibeResult);
     
     // Send the whispered message (no roll object needed with Math.random)
     await this.sendWhisperedMessage(messageContent, recipients);
@@ -94,32 +93,25 @@ export class MessagingSystem {
   /**
    * Create the message content for a vibe notification
    * @param {Object} vibeResult - The vibe roll result
-   * @param {boolean} isFirstSight - Whether this is first sight
    * @returns {string} - HTML message content
    */
-  createVibeMessageContent(vibeResult, isFirstSight) {
+  createVibeMessageContent(vibeResult) {
     const { sourceToken, targetToken, sourceType, vibeType, flavorText, roll } = vibeResult;
-    
+
     const vibeDisplayName = this.getVibeDisplayName(vibeType);
     const vibeColor = this.getVibeColor(vibeType);
-    
-    let messageHtml = `
+
+    const messageHtml = `
       <div class="pf2e-npc-vibes-message" style="border-left: 4px solid ${vibeColor}; padding-left: 10px; margin: 5px 0;">
         <h3 style="color: ${vibeColor}; margin: 0 0 5px 0;">
           <i class="fas fa-heart"></i> ${vibeDisplayName} Vibe
         </h3>
-    `;
-    
-    if (isFirstSight) {
-      messageHtml += `<p><em>First sight between ${sourceToken.name} and ${targetToken.name}</em></p>`;
-    }
-    
-    messageHtml += `
         <p><strong>${sourceToken.name}</strong> feels <strong style="color: ${vibeColor};">${vibeDisplayName.toLowerCase()}</strong> towards <strong>${targetToken.name}</strong></p>
         <p style="font-style: italic; color: #666;">${flavorText}</p>
+        <p style="font-size: 12px; color: #999;">(Rolled ${roll})</p>
       </div>
     `;
-    
+
     return messageHtml;
   }
 
@@ -149,32 +141,7 @@ export class MessagingSystem {
     }
   }
 
-  /**
-   * Send a general notification about first sight
-   * @param {Token} pcToken - The PC token
-   * @param {Token} npcToken - The NPC token
-   */
-  async sendFirstSightNotification(pcToken, npcToken) {
-    if (!game.settings.get(this.moduleId, 'enableNotifications')) {
-      return;
-    }
 
-    // Only send to GM for first sight notifications
-    const gmUsers = game.users.filter(user => user.isGM && user.active);
-    if (gmUsers.length === 0) return;
-
-    const content = `
-      <div class="pf2e-npc-vibes-message" style="border-left: 4px solid #4a90e2; padding-left: 10px; margin: 5px 0;">
-        <h3 style="color: #4a90e2; margin: 0 0 5px 0;">
-          <i class="fas fa-eye"></i> First Sight
-        </h3>
-        <p><strong>${pcToken.name}</strong> and <strong>${npcToken.name}</strong> see each other for the first time.</p>
-        <p><em>Rolling for vibes...</em></p>
-      </div>
-    `;
-
-    await this.sendWhisperedMessage(content, gmUsers.map(user => user.id));
-  }
 
   /**
    * Send a connection level update notification

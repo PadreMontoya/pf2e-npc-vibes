@@ -2,7 +2,7 @@
   "id": "pf2e-npc-vibes",
   "title": "PF2E NPC Vibes",
   "description": "Automatically generates and tracks emotional vibes between PCs and NPCs based on line of sight, with visual indicators and connection tracking.",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "compatibility": {
     "minimum": "12",
     "verified": "12.331",
