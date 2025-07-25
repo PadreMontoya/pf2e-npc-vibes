@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.5] - 2025-07-24
+
+### Fixed
+- Fixed "Reset All Vibes" button not clearing the Vibes tab display
+- Fixed data cache not being properly invalidated after reset
+- Improved UI refresh after data operations
+
+### Changed
+- Moved "Refresh" button to bottom of Vibes tab for better UX
+- Moved Import/Export buttons to Debug tab for better organization
+- Enhanced data cache management for immediate UI updates
+
 ## [1.1.4] - 2025-07-24
 
 ### Added

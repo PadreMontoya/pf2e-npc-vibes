@@ -4,21 +4,7 @@
       <p>{{error}}</p>
     </div>
   {{else}}
-    <div class="vibe-book-header">
-      <div class="header-controls">
-        <button type="button" class="refresh-vibes">
-          <i class="fas fa-sync-alt"></i> Refresh
-        </button>
-        {{#if isGM}}
-          <button type="button" class="export-vibes">
-            <i class="fas fa-download"></i> Export
-          </button>
-          <button type="button" class="import-vibes">
-            <i class="fas fa-upload"></i> Import
-          </button>
-        {{/if}}
-      </div>
-    </div>
+
 
     {{#if isGM}}
       <!-- GM View with Tabs -->
@@ -94,6 +80,13 @@
             <p>{{localize "PF2E_NPC_VIBES.VibeBook.NoVibes"}}</p>
           </div>
         {{/if}}
+
+        <!-- Refresh Button at Bottom of Vibes Tab -->
+        <div class="vibes-tab-footer">
+          <button type="button" class="refresh-vibes">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+        </div>
         </div>
 
         <!-- Debug Tab -->
@@ -110,6 +103,18 @@
               <button type="button" class="reset-all-vibes" style="background: #dc3545; border-color: #dc3545;">
                 <i class="fas fa-bomb"></i> Reset All Vibes
               </button>
+            </div>
+
+            <div class="data-controls">
+              <h4>Data Management</h4>
+              <div class="debug-controls">
+                <button type="button" class="export-vibes">
+                  <i class="fas fa-download"></i> Export Data
+                </button>
+                <button type="button" class="import-vibes">
+                  <i class="fas fa-upload"></i> Import Data
+                </button>
+              </div>
             </div>
 
             {{#if debugData}}
@@ -493,5 +498,40 @@
   font-style: italic;
   text-align: center;
   padding: 20px;
+}
+
+/* Vibes Tab Footer */
+.vibes-tab-footer {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+  text-align: center;
+}
+
+.vibes-tab-footer button {
+  background: #007bff;
+  color: white;
+  border: 1px solid #007bff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.vibes-tab-footer button:hover {
+  background: #0056b3;
+  border-color: #0056b3;
+}
+
+/* Data Controls Section */
+.data-controls {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+}
+
+.data-controls h4 {
+  margin: 0 0 10px 0;
+  color: #333;
 }
 </style>

@@ -547,7 +547,17 @@ export class VibeBookApplication extends Application {
         }
 
         console.log('🎭 PF2E NPC Vibes | All vibe data reset by GM');
-        this.render(true);
+
+        // Force a complete re-render with fresh data
+        await this.render(true);
+
+        // Also refresh any other open Vibe Books
+        Object.values(ui.windows).forEach(window => {
+          if (window instanceof this.constructor) {
+            window.render(true);
+          }
+        });
+
         ui.notifications.info('All vibe data has been reset');
       }
     } catch (error) {
